@@ -1,0 +1,15 @@
+{% extends "accounts/_page.html" %}{% block content %}
+<h1>Bună, {{ me.display_name }}</h1>
+<section aria-labelledby="me-h"><h2 id="me-h">Lectura mea</h2>
+<p>Pe raft: {{ my_stats.books_on_shelf }} · Terminate: {{ my_stats.books_finished }} · Pagini: {{ my_stats.pages_total }} · Ultimele 7 zile: {{ my_stats.pages_7d }}</p>
+</section>
+<section aria-labelledby="kids-h"><h2 id="kids-h">Copiii</h2>
+<ul>{% for item in children %}
+<li><a href="{% url 'child_report' item.child.public_id %}">{{ item.child.nickname }}</a>
+— pe raft: {{ item.stats.books_on_shelf }}, terminate: {{ item.stats.books_finished }}, pagini: {{ item.stats.pages_total }}, ultimele 7 zile: {{ item.stats.pages_7d }}
+{% if item.current_entry %}<br>Citește acum: {{ item.current_entry.book.title }}, pagina {{ item.current_entry.current_page }} din {{ item.current_entry.page_count }} ({{ item.current_entry.percent }}%){% endif %}
+</li>{% empty %}<li>Încă nu ai adăugat copii.</li>{% endfor %}</ul>
+<p><a href="{% url 'family' %}">Familie</a></p>
+</section>
+<form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Ieși din cont</button></form>
+{% endblock %}

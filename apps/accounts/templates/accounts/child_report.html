@@ -1,0 +1,14 @@
+{% extends "accounts/_page.html" %}{% block content %}
+<h1>{{ child.nickname }}</h1>
+<p>Pe raft: {{ stats.books_on_shelf }} · Terminate: {{ stats.books_finished }} · Pagini: {{ stats.pages_total }} · Ultimele 7 zile: {{ stats.pages_7d }}</p>
+<h2>Cărți</h2>
+<ul>{% for entry in entries %}
+<li>{{ entry.book.title }} — {{ entry.book.author }}: pagina {{ entry.current_page }} din {{ entry.page_count }} ({{ entry.percent }}%){% if entry.status == "finished" %}, terminată{% endif %}</li>
+{% empty %}<li>Nicio carte pe raft.</li>{% endfor %}</ul>
+<h2>Realizări</h2>
+<ul>{% for grant in grants %}<li>{{ grant.title }} ({{ grant.granted_at|date:"j.m.Y" }})</li>{% empty %}<li>Încă nicio realizare.</li>{% endfor %}</ul>
+<h2>Clubul</h2>
+<p>{% if is_member %}Membru al clubului acum.{% else %}Nu este membru al clubului acum.{% endif %}</p>
+{% if memberships %}<ul>{% for m in memberships %}<li>Abonament până la {{ m.valid_until|date:"j.m.Y" }}{% if m.status == "revoked" %} (revocat){% endif %}</li>{% endfor %}</ul>{% endif %}
+<p><a href="{% url 'adult_dashboard' %}">Înapoi la panou</a></p>
+{% endblock %}
