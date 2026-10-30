@@ -1,0 +1,3 @@
+<!doctype html><html lang="ro"><meta charset="utf-8"><title>Realizări</title>
+<h1>Realizări</h1><ul>{% for grant in earned %}<li>{{ grant.title }}</li>{% endfor %}</ul>
+<h2>Insigne viitoare</h2><ul>{% for item in locked %}<li>{{ item.achievement.title }} — {{ item.hint }}</li>{% endfor %}</ul></html>

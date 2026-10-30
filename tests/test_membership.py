@@ -50,10 +50,13 @@ def test_issuing_requires_staff_and_stores_only_digest(reader):
     assert code_digest(" ab-c D\t") == code_digest("ABCD")
 
 
-def test_redemption_without_adapter_fails_closed(reader):
-    from apps.club.services import redeem_code, IntegrationPending
-    with pytest.raises(IntegrationPending):
+@pytest.mark.django_db(transaction=True)
+def test_real_redemption_persists_failed_attempt(reader):
+    from apps.club.services import redeem_code, InvalidCode
+    from apps.accounts.models import Throttle
+    with pytest.raises(InvalidCode):
         redeem_code(reader.account, reader, "anything")
+    assert Throttle.objects.get(scope=Throttle.REDEEM).failures == 1
 
 
 def test_staff_activation_and_revocation(reader):
