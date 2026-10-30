@@ -19,7 +19,7 @@ def add_route(settings):
 
     def add(route, name):
         extra = path(route, lambda request: HttpResponse(name), name=name)
-        settings.ROOT_URLCONF = type("urls", (), {"urlpatterns": [*config.urls.urlpatterns, extra]})
+        settings.ROOT_URLCONF = type("urls", (), {"urlpatterns": [extra, *config.urls.urlpatterns]})
 
     return add
 

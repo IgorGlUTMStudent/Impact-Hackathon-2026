@@ -1,0 +1,92 @@
+{% extends "child/base.html" %}
+{% load static i18n %}
+
+{% block title %}Gustul Cărților — Acasă{% endblock %}
+
+{% block content %}
+  <!-- Mascot Welcome / Reaction -->
+  <section class="mascot-container" aria-label="Mesaj de la Gusti">
+    <img src="{% static 'img/mascot/mascot-' %}{{ mascot.mood|default:'happy' }}.svg" alt="Mascot" class="mascot-avatar" width="72" height="72">
+    <div class="mascot-bubble">
+      <p class="mascot-text">{{ mascot.text|default:"Salut! Hai să citim ceva frumos!" }}</p>
+    </div>
+  </section>
+
+  <!-- Recent Achievement Banner (if any) -->
+  {% if recent_grants %}
+    {% for grant in recent_grants %}
+      <div class="child-grant-banner" role="status">
+        <span style="font-size: 1.5rem;">🎉</span>
+        <strong>{% translate "Nou trofeu deblocat:" %} {{ grant.title }}!</strong>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- Current Book Card or Invitation -->
+  <section aria-labelledby="current-book-heading">
+    {% if current_entry %}
+      <div class="current-book-card">
+        <div class="current-book-header">
+          <div class="book-cover" style="background-color: {{ current_entry.book.cover_color|default:'#F59E0B' }};" aria-hidden="true">
+            {{ current_entry.book.cover_emoji|default:"📖" }}
+          </div>
+          <div class="current-book-info">
+            <h2 id="current-book-heading" class="current-book-title">{{ current_entry.book.title }}</h2>
+            <p class="current-book-author">{{ current_entry.book.author }}</p>
+          </div>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar-header">
+            <span>{% translate "Pagina" %} {{ current_entry.current_page }} {% translate "din" %} {{ current_entry.page_count }}</span>
+            <span>{{ current_entry.percent }}%</span>
+          </div>
+          <div class="progress-bar-track" role="progressbar" aria-valuenow="{{ current_entry.percent }}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar-fill" style="width: {{ current_entry.percent }}%;"></div>
+          </div>
+        </div>
+
+        <a href="/raft/{{ current_entry.public_id }}/" class="btn-child btn-child-primary">
+          <span>📖</span>
+          <span>{% translate "Continuă lectura" %}</span>
+        </a>
+      </div>
+    {% else %}
+      <div class="current-book-card" style="text-align: center; padding: 24px;">
+        <span style="font-size: 3rem; margin-bottom: 8px;">📚</span>
+        <h2 id="current-book-heading" class="current-book-title" style="margin-bottom: 6px;">{% translate "Nicio carte pe raft încă" %}</h2>
+        <p class="current-book-author" style="margin-bottom: 16px;">{% translate "Alege o carte din bibliotecă și începe aventura!" %}</p>
+        <a href="/carti/" class="btn-child btn-child-primary">
+          <span>✨</span>
+          <span>{% translate "Alege o carte" %}</span>
+        </a>
+      </div>
+    {% endif %}
+  </section>
+
+  <!-- 4 Primary Destinations (FR-030: maximum 4 primary destinations) -->
+  <nav class="child-nav-grid" aria-label="Meniu principal">
+    <a href="/raft/" class="child-nav-card">
+      <span class="child-nav-icon">📖</span>
+      <span class="child-nav-title">{% translate "Raftul meu" %}</span>
+    </a>
+
+    <a href="/carti/" class="child-nav-card">
+      <span class="child-nav-icon">📚</span>
+      <span class="child-nav-title">{% translate "Toate cărțile" %}</span>
+    </a>
+
+    <a href="/realizari/" class="child-nav-card">
+      <span class="child-nav-icon">🏆</span>
+      <span class="child-nav-title">{% translate "Trofeele mele" %}</span>
+    </a>
+
+    <a href="/clubul-meu/" class="child-nav-card">
+      <span class="child-nav-icon">⭐</span>
+      <span class="child-nav-title">
+        {% translate "Clubul meu" %}
+        {% if not is_member %}🔒{% endif %}
+      </span>
+    </a>
+  </nav>
+{% endblock %}

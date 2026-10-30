@@ -1,0 +1,56 @@
+{% extends "child/base.html" %}
+{% load static i18n %}
+
+{% block title %}Gustul Cărților — Clubul Meu{% endblock %}
+
+{% block content %}
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <h1 style="font-size: 1.4rem; font-weight: 800;">⭐ {% translate "Clubul de Lectură" %}</h1>
+    <a href="/copil/" class="child-exit-btn">
+      <span>⬅️</span>
+      <span>{% translate "Acasă" %}</span>
+    </a>
+  </div>
+
+  <!-- Club Member Welcome Card -->
+  <div style="background: linear-gradient(135deg, #EFF6FF 0%, #FEF3C7 100%); border: 2px solid var(--child-accent); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
+    <span style="font-size: 3rem;">🌟</span>
+    <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--child-text); margin-top: 6px;">
+      {% translate "Ești membru al Clubului Gustul Cărților!" %}
+    </h2>
+    <p style="font-size: 0.95rem; color: var(--child-text-muted); margin-top: 4px;">
+      {% translate "Aici găsești evenimentele speciale și atelierele noastre de lectură." %}
+    </p>
+  </div>
+
+  <!-- Club Activities (no external links, safe child environment) -->
+  <section aria-labelledby="activities-heading">
+    <h2 id="activities-heading" style="font-size: 1.15rem; font-weight: 700; margin-bottom: 12px;">
+      📅 {% translate "Următoarele întâlniri" %}
+    </h2>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      {% for act in activities %}
+        <div style="background: var(--child-surface); border: 2px solid var(--child-border); border-radius: var(--radius-md); padding: 16px;">
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--child-primary);">{{ act.title }}</h3>
+          <div style="display: flex; gap: 16px; margin-top: 8px; font-size: 0.95rem; color: var(--child-text-muted); flex-wrap: wrap;">
+            <span>🕒 {{ act.starts_at|date:"d E, H:i" }}</span>
+            <span>📍 {{ act.place }}</span>
+          </div>
+        </div>
+      {% empty %}
+        <div style="background: var(--child-surface); border: 2px dashed var(--child-border); border-radius: var(--radius-md); padding: 24px; text-align: center;">
+          <p style="color: var(--child-text-muted); font-size: 0.95rem;">
+            {% translate "Nu sunt activități programate pentru această săptămână. Verifică din nou curând!" %}
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <div style="background: var(--child-surface-subtle); border-radius: var(--radius-md); padding: 14px; text-align: center;">
+    <p style="font-size: 0.85rem; color: var(--child-text-muted);">
+      🛡️ {% translate "Zonă sigură pentru copii. Participarea la ateliere se face împreună cu părinții." %}
+    </p>
+  </div>
+{% endblock %}
