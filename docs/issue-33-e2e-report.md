@@ -7,8 +7,10 @@ Baseline: canonical upstream/main **17197080a48edee56a727b3ec68d2de509cd2035**.
 Origin is Igor's fork, whose main was older. Branch:
 `feat/issue33-real-demo-e2e`. Tested implementation HEAD:
 **992b84c27b1394b01c7abb9eec177319d8a62bad**. The subsequent evidence-only commit
-does not alter executable code; final submission SHA and CI run are recorded in
-the linked PR. Contract: docs/issue33-e2e-contracts, documents 00 and 01.
+does not alter executable code. Code + local-evidence candidate HEAD:
+**fb0017e8c7ed143d0f1d3735b932ec7697f30665**. Final documentation-only submission
+SHA/checks are recorded in [PR #37](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/pull/37).
+Contract: docs/issue33-e2e-contracts, documents 00 and 01.
 
 Recon confirmed #21/#22/#29/#30/#31 integrated in main, no existing demo_flow.py,
 and only the documentation contract PR #36 open. No production corrections or
@@ -83,14 +85,21 @@ Windows / Python3.12.16, Django5.2.18, pytest9.2.0. Commands use local .tools/uv
 - `uv run python manage.py check`: PASS, no issues (0 silenced).
 - `uv run python manage.py makemigrations --check --dry-run`: PASS, no changes detected.
 - `git diff --check`: PASS before implementation commit; repeated for evidence.
-- Ubuntu CI on final submitted head: pending PR workflow. Final run/result linked
-  in PR; no acceptance or green-CI claim until observed.
+- Ubuntu/Python3.12 CI on candidate **fb0017e**: **366 passed, 4 skipped in157.50s**,
+  no failures; system check and migration drift PASS. Actual workflow:
+  https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/actions/runs/41095557004
+  (job124200268715). The final evidence-only HEAD also requires its own green
+  check; its result will be attached to PR #37 before handoff.
 
 Four existing skips in test_library_views.py are opt-in immutable UI snapshots
 with mocked authz, not the newly integrated actual templates: two cases at line205
 and one at line252 require LIBRARY_ADULT_UI_REF; one case at line205 requires
 LIBRARY_CHILD_UI_REF. Variables were not configured; no new skip/xfail was added.
 The new E2E verifies both checked-in owner template sets without those overrides.
+The skipped cases are test_real_owner_detail_template_render_with_mocked_authz
+(adult/anonymous, adult/authenticated, child/authenticated) and
+test_real_adult_templates_catalog_detail_add_35_finish_with_mocked_authz (adult).
+They also remain skipped in Ubuntu; none of the four new E2E tests is skipped.
 
 ## Limitations and ownership
 
