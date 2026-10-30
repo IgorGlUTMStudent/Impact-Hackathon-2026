@@ -1,0 +1,14 @@
+{% extends "accounts/_page.html" %}{% block content %}
+<h1>Familie</h1>
+{% if not pin_set %}<p><a href="{% url 'pin_set' %}">Setează PIN-ul</a> înainte de modul copil.</p>{% endif %}
+{% if rename_form %}<div role="alert">{{ rename_child.nickname }}: {{ rename_form.errors }}</div>{% endif %}
+<ul>{% for child in children %}
+<li>{{ child.nickname }} ({{ child.age_band }}, {{ child.avatar }})
+<form method="post" action="{% url 'child_rename' child.public_id %}">{% csrf_token %}<input name="nickname" value="{{ child.nickname }}" minlength="2" maxlength="20"><button>Redenumește</button></form>
+<form method="post" action="{% url 'child_delete' child.public_id %}">{% csrf_token %}<input type="hidden" name="confirm" value="1"><button>Șterge</button></form>
+<form method="post" action="{% url 'child_mode_start' child.public_id %}">{% csrf_token %}<button>Mod copil</button></form>
+</li>{% endfor %}</ul>
+{{ form.non_field_errors }}
+{% if can_add_child %}<form method="post">{% csrf_token %}{{ form.as_p }}<button>Adaugă copil</button></form>{% endif %}
+<form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Ieși din cont</button></form>
+{% endblock %}

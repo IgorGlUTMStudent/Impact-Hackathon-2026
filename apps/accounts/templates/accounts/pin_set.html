@@ -1,0 +1,4 @@
+{% extends "accounts/_page.html" %}{% block content %}
+<h1>PIN pentru părinte</h1>
+<form method="post">{% csrf_token %}{{ form.as_p }}<button>Salvează</button></form>
+{% endblock %}

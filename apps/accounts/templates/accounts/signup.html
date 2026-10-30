@@ -1,0 +1,4 @@
+{% extends "accounts/_page.html" %}{% block content %}
+<h1>Creează cont</h1>
+<form method="post">{% csrf_token %}{{ form.as_p }}<button>Creează</button></form>
+{% endblock %}

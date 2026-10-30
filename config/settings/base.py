@@ -49,7 +49,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # PR-2 adds apps.accounts.middleware.ChildModeMiddleware here (after AuthenticationMiddleware).
+    "apps.accounts.middleware.ChildModeMiddleware",  # deny-by-default child mode; needs request.user
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -109,6 +109,10 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 days sliding (authorization.md)
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
+
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "/panou/"  # adult_dashboard (routes.md row 6); not built yet, owner TBD
+LOGOUT_REDIRECT_URL = "login"
 
 LOGGING = {
     "version": 1,

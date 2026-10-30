@@ -1,0 +1,6 @@
+{% extends "accounts/_page.html" %}{% block content %}
+<h1>Roagă un părinte</h1>
+{% if locked_minutes %}<p role="alert">Prea multe încercări, încearcă peste {{ locked_minutes }} min.</p>{% endif %}
+<form method="post">{% csrf_token %}{{ form.as_p }}<button>Deblochează</button></form>
+<form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Am uitat PIN-ul — ieși din cont</button></form>
+{% endblock %}
