@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Activare cod membru Club — Gustul Cărților" %}{% endblock %}
+
+{% block content %}
+<div style="max-width: 480px; margin: var(--space-8) auto;">
+  <div class="card">
+    <div style="text-align: center; margin-bottom: var(--space-6);">
+      <span style="font-size: 2.5rem;" aria-hidden="true">🎟️</span>
+      <h1 style="font-size: var(--text-2xl); margin-top: var(--space-2); margin-bottom: var(--space-1);">
+        {% translate "Activează codul de Club" %}
+      </h1>
+      <p style="font-size: var(--text-sm);">
+        {% translate "Introdu codul primit pentru a activa abonamentul de lectură și evenimentele de comunitate." %}
+      </p>
+    </div>
+
+    {% if error or errors %}
+      <div class="alert alert-error" role="alert">
+        <span aria-hidden="true">⚠</span>
+        <div>
+          {% if error %}
+            <div>{{ error }}</div>
+          {% endif %}
+          {% if errors %}
+            {% for err in errors %}
+              <div>{{ err }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    <form method="post" action="/club/cod/">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="id_code" class="form-label">{% translate "Cod de activare" %}</label>
+        <input 
+          type="text" 
+          name="code" 
+          id="id_code" 
+          class="form-control" 
+          required 
+          autocomplete="off"
+          placeholder="EX: CLUB-2026-READ"
+          style="text-transform: uppercase; letter-spacing: 0.1em; font-weight: var(--font-bold); text-align: center; font-size: var(--text-lg);"
+        >
+        <div class="form-hint">{% translate "Codul poate conține litere mari, cifre și cratime." %}</div>
+      </div>
+
+      <div class="form-group">
+        <label for="id_reader" class="form-label">{% translate "Pentru cine activezi codul?" %}</label>
+        <select name="reader" id="id_reader" class="form-control" required>
+          <option value="self">{% translate "Pentru mine (Adult / Părinte)" %}</option>
+          {% if children %}
+            <optgroup label="{% translate 'Copiii mei' %}">
+              {% for item in children %}
+                {% with c=item.child|default:item %}
+                  <option value="{{ c.public_id }}">{{ c.nickname }} ({{ c.age_band }} ani)</option>
+                {% endwith %}
+              {% endfor %}
+            </optgroup>
+          {% endif %}
+        </select>
+        <div class="form-hint">{% translate "Alege cititorul căruia i se atribuie calitatea de membru." %}</div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-6);">
+        {% translate "Activează abonamentul" %}
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Conectare — Gustul Cărților" %}{% endblock %}
+
+{% block content %}
+<div style="max-width: 440px; margin: var(--space-8) auto;">
+  <div class="card">
+    <div style="text-align: center; margin-bottom: var(--space-6);">
+      <span style="font-size: 2.5rem;" aria-hidden="true">🔐</span>
+      <h1 style="font-size: var(--text-2xl); margin-top: var(--space-2); margin-bottom: var(--space-1);">
+        {% translate "Conectare părinte" %}
+      </h1>
+      <p style="font-size: var(--text-sm);">
+        {% translate "Introdu adresa de email și parola pentru a accesa contul de adult." %}
+      </p>
+    </div>
+
+    {% if form.errors or error or errors %}
+      <div class="alert alert-error" role="alert">
+        <span aria-hidden="true">⚠</span>
+        <div>
+          {% if form.non_field_errors %}
+            {% for err in form.non_field_errors %}
+              <div>{{ err }}</div>
+            {% endfor %}
+          {% elif error %}
+            <div>{{ error }}</div>
+          {% elif errors %}
+            {% for err in errors %}
+              <div>{{ err }}</div>
+            {% endfor %}
+          {% else %}
+            <div>{% translate "Email sau parolă greșită. Verifică datele și încearcă din nou." %}</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    <form method="post" action="/cont/intrare/" novalidate>
+      {% csrf_token %}
+      {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+      {% endif %}
+
+      <div class="form-group">
+        <label for="id_username" class="form-label">{% translate "Adresă email" %}</label>
+        <input 
+          type="email" 
+          name="username" 
+          id="id_username" 
+          class="form-control" 
+          autocomplete="email" 
+          required 
+          value="{{ form.username.value|default:'' }}"
+          placeholder="exemplu@familie.ro"
+          {% if form.username.errors %}aria-invalid="true"{% endif %}
+        >
+        {% if form.username.errors %}
+          <div class="field-error">
+            <span>⚠</span> {{ form.username.errors.0 }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="id_password" class="form-label">{% translate "Parolă" %}</label>
+        <input 
+          type="password" 
+          name="password" 
+          id="id_password" 
+          class="form-control" 
+          autocomplete="current-password" 
+          required
+          placeholder="••••••••"
+          {% if form.password.errors %}aria-invalid="true"{% endif %}
+        >
+        {% if form.password.errors %}
+          <div class="field-error">
+            <span>⚠</span> {{ form.password.errors.0 }}
+          </div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-4);">
+        {% translate "Conectează-te" %}
+      </button>
+    </form>
+
+    <div style="margin-top: var(--space-6); text-align: center; border-top: 1px solid var(--color-border); padding-top: var(--space-4); font-size: var(--text-sm);">
+      {% translate "Nu ai încă un cont?" %} 
+      <a href="/cont/inregistrare/">{% translate "Creează cont nou" %}</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

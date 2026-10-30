@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ entry.book.title }} — {% translate "Jurnal de lectură" %}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: var(--space-4);">
+  <a href="/raft/" class="btn btn-outline btn-sm">
+    &larr; {% translate "Înapoi la raftul meu" %}
+  </a>
+</div>
+
+<div class="grid-2col" style="align-items: start; gap: var(--space-8);">
+  <!-- Book Details & Generated Cover -->
+  <div class="card" style="text-align: center; padding: var(--space-6);">
+    <div class="book-cover" style="background-color: {{ entry.book.cover_color|default:'#F4A261' }}; border-radius: var(--radius-md); max-width: 220px; margin: 0 auto var(--space-4) auto; box-shadow: var(--shadow-md);">
+      <div class="book-cover-title" style="font-size: var(--text-base);">{{ entry.book.title }}</div>
+      <div class="book-cover-emoji" style="font-size: 3.5rem;" aria-hidden="true">{{ entry.book.cover_emoji|default:'📖' }}</div>
+      <div class="book-cover-author" style="font-size: var(--text-xs);">{{ entry.book.author }}</div>
+    </div>
+
+    <h1 style="font-size: var(--text-2xl); margin-bottom: var(--space-1);">{{ entry.book.title }}</h1>
+    <p style="font-size: var(--text-base); color: var(--color-text-muted); margin-bottom: var(--space-4);">{{ entry.book.author }}</p>
+
+    <div style="display: flex; gap: var(--space-2); justify-content: center; flex-wrap: wrap;">
+      {% if entry.book.age_band %}
+        <span class="badge badge-accent">{{ entry.book.age_band }} {% translate "ani" %}</span>
+      {% endif %}
+      <span class="badge badge-primary">{{ entry.book.genre }}</span>
+      <span class="badge">{{ entry.book.page_count }} {% translate "pagini" %}</span>
+    </div>
+  </div>
+
+  <!-- Progress Panel (included partial for HTMX swap) -->
+  <div>
+    {% include "adult/_progress.html" %}
+  </div>
+</div>
+{% endblock %}

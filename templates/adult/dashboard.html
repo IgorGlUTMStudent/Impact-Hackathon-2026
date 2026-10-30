@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Panou de control — Gustul Cărților" %}{% endblock %}
+
+{% block content %}
+<div class="dashboard-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-4); margin-bottom: var(--space-6);">
+  <div>
+    <h1>{% translate "Bună ziua" %}, {% if me.display_name %}{{ me.display_name }}{% elif request.user.is_authenticated %}{{ request.user.display_name }}{% else %}{% translate "Părinte" %}{% endif %}! 👋</h1>
+    <p>{% translate "Iată sinteza lecturii din familia ta și progresul recent." %}</p>
+  </div>
+  <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+    <a href="/familie/" class="btn btn-outline">
+      <span aria-hidden="true">👨‍👩‍👧‍👦</span> {% translate "Gestionează familia" %}
+    </a>
+    <a href="/raft/" class="btn btn-primary">
+      <span aria-hidden="true">📚</span> {% translate "Raftul meu" %}
+    </a>
+  </div>
+</div>
+
+<!-- Adult's Own Stats Summary -->
+<div class="card" style="margin-bottom: var(--space-8);">
+  <div class="card-header">
+    <h2 class="card-title">{% translate "Lectura mea personală" %}</h2>
+    <a href="/raft/" class="btn btn-sm btn-outline">{% translate "Vezi raftul meu" %} &rarr;</a>
+  </div>
+  {% if my_stats %}
+    <div class="stat-grid">
+      <div class="stat-card primary">
+        <div class="stat-val">{{ my_stats.books_on_shelf }}</div>
+        <div class="stat-label">{% translate "Cărți pe raft" %}</div>
+      </div>
+      <div class="stat-card primary">
+        <div class="stat-val">{{ my_stats.books_finished }}</div>
+        <div class="stat-label">{% translate "Cărți finalizate" %}</div>
+      </div>
+      <div class="stat-card primary">
+        <div class="stat-val">{{ my_stats.pages_total }}</div>
+        <div class="stat-label">{% translate "Total pagini citite" %}</div>
+      </div>
+      <div class="stat-card primary">
+        <div class="stat-val">{{ my_stats.pages_7d }}</div>
+        <div class="stat-label">{% translate "Pagini în ultimele 7 zile" %}</div>
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-state" style="padding: var(--space-6) var(--space-4);">
+      <p>{% translate "Nu ai început încă nicio carte în jurnalul tău de adult." %}</p>
+      <a href="/carti/" class="btn btn-sm btn-primary" style="margin-top: var(--space-2);">{% translate "Alege o carte din catalog" %}</a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Children Summary Cards -->
+<div class="section-children" style="margin-bottom: var(--space-8);">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+    <h2 style="margin-bottom: 0;">{% translate "Copiii mei" %}</h2>
+    <a href="/familie/" class="btn btn-sm btn-outline">{% translate "+ Adaugă copil" %}</a>
+  </div>
+
+  {% if children %}
+    <div class="grid-cards" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+      {% for item in children %}
+        <div class="child-card">
+          <div class="child-card-header">
+            <div class="child-avatar" aria-hidden="true">
+              {% if item.child.avatar == 'fox' %}🦊
+              {% elif item.child.avatar == 'owl' %}🦉
+              {% elif item.child.avatar == 'bear' %}🐻
+              {% elif item.child.avatar == 'rabbit' %}🐰
+              {% else %}⭐{% endif %}
+            </div>
+            <div>
+              <h3 style="margin-bottom: 0; font-size: var(--text-lg);">{{ item.child.nickname }}</h3>
+              <span class="badge badge-accent">{% translate "Grupa de vârstă" %}: {{ item.child.age_band }} {% translate "ani" %}</span>
+            </div>
+          </div>
+
+          <!-- Child stats chips -->
+          <div style="display: flex; gap: var(--space-2); background: var(--color-surface-subtle); padding: var(--space-3); border-radius: var(--radius-md); justify-content: space-around; text-align: center;">
+            <div>
+              <div style="font-size: var(--text-lg); font-weight: var(--font-bold); color: var(--color-primary);">{{ item.stats.books_finished }}</div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-light);">{% translate "finalizate" %}</div>
+            </div>
+            <div style="border-left: 1px solid var(--color-border); height: 32px;"></div>
+            <div>
+              <div style="font-size: var(--text-lg); font-weight: var(--font-bold); color: var(--color-primary);">{{ item.stats.pages_total }}</div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-light);">{% translate "pagini citite" %}</div>
+            </div>
+            <div style="border-left: 1px solid var(--color-border); height: 32px;"></div>
+            <div>
+              <div style="font-size: var(--text-lg); font-weight: var(--font-bold); color: var(--color-accent);">{{ item.stats.pages_7d }}</div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-light);">{% translate "ultimele 7 zile" %}</div>
+            </div>
+          </div>
+
+          <!-- Current reading book -->
+          <div style="margin-top: var(--space-2);">
+            <div style="font-size: var(--text-xs); font-weight: var(--font-semibold); color: var(--color-text-light); text-transform: uppercase;">
+              {% translate "Cartea curentă" %}
+            </div>
+            {% if item.current_entry %}
+              <div style="margin-top: var(--space-2); display: flex; gap: var(--space-3); align-items: center;">
+                <div style="width: 44px; height: 58px; background-color: {{ item.current_entry.book.cover_color|default:'#F4A261' }}; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;" aria-hidden="true">
+                  {{ item.current_entry.book.cover_emoji|default:'📖' }}
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-weight: var(--font-bold); font-size: var(--text-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    {{ item.current_entry.book.title }}
+                  </div>
+                  <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+                    {{ item.current_entry.book.author }}
+                  </div>
+                  <div class="progress-container" style="margin-top: var(--space-1); margin-bottom: 0;">
+                    <div class="progress-bar-track" style="height: 6px;">
+                      <div class="progress-bar-fill" style="width: {{ item.current_entry.percent }}%;"></div>
+                    </div>
+                  </div>
+                  <div style="font-size: var(--text-xs); color: var(--color-text-light); text-align: right; margin-top: 2px;">
+                    {{ item.current_entry.current_page }} / {{ item.current_entry.page_count }} pag. ({{ item.current_entry.percent }}%)
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              <p style="font-size: var(--text-sm); color: var(--color-text-light); margin-top: var(--space-1);">
+                {% translate "Nicio carte în curs de citire." %}
+              </p>
+            {% endif %}
+          </div>
+
+          <!-- Actions -->
+          <div style="display: flex; gap: var(--space-2); margin-top: auto; padding-top: var(--space-3); border-top: 1px solid var(--color-border);">
+            <a href="/familie/{{ item.child.public_id }}/" class="btn btn-outline btn-sm" style="flex: 1;">
+              {% translate "Raport detaliat" %}
+            </a>
+            <form method="post" action="/familie/{{ item.child.public_id }}/mod-copil/" style="flex: 1;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-accent btn-sm btn-block">
+                {% translate "Mod Copil" %} &rarr;
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <span class="empty-icon" aria-hidden="true">👨‍👧‍👦</span>
+      <h3 class="empty-title">{% translate "Nu ai adăugat niciun copil încă" %}</h3>
+      <p class="empty-desc">{% translate "Creează profilul copilului pentru a-i urmări cărțile citite și a activa Modul Copil protejat prin PIN." %}</p>
+      <a href="/familie/" class="btn btn-primary">{% translate "Adaugă primul copil" %}</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

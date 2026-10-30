@@ -1,0 +1,128 @@
+{% load i18n %}
+<div id="progress-panel" class="card" style="padding: var(--space-6);">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+    <h2 style="font-size: var(--text-xl); margin-bottom: 0;">{% translate "Progres lectură" %}</h2>
+    <span class="badge {% if entry.status == 'finished' %}badge-primary{% else %}badge-accent{% endif %}">
+      {% if entry.status == 'finished' %}
+        ✓ {% translate "Finalizată" %}
+      {% else %}
+        {{ entry.percent }}% {% translate "parcurs" %}
+      {% endif %}
+    </span>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-container" style="margin-bottom: var(--space-4);">
+    <div class="progress-bar-track" style="height: 14px;">
+      <div class="progress-bar-fill" style="width: {{ entry.percent }}%;"></div>
+    </div>
+    <div class="progress-labels">
+      <span>{% translate "Pagina" %} {{ entry.current_page }} din {{ entry.page_count }}</span>
+      <span>{{ entry.percent }}%</span>
+    </div>
+  </div>
+
+  <!-- Inline Validation Errors -->
+  {% if errors %}
+    <div class="alert alert-error" role="alert" style="margin-bottom: var(--space-4);">
+      <span aria-hidden="true">⚠</span>
+      <div>
+        {% for err in errors %}
+          <div>{{ err }}</div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- New Grants Notification -->
+  {% if new_grants %}
+    <div class="alert alert-success" role="status" style="margin-bottom: var(--space-4);">
+      <span aria-hidden="true">🎉</span>
+      <div>
+        <strong>{% translate "Felicitări! Ai obținut noi insigne:" %}</strong>
+        <ul style="margin-top: 4px; padding-left: 20px;">
+          {% for g in new_grants %}
+            <li>{{ g.title }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Progress Update Form (Progressive Enhancement HTMX) -->
+  {% if entry.status != 'finished' %}
+    <form 
+      id="progress-form"
+      method="post" 
+      action="/raft/{{ entry.public_id }}/progres/"
+      hx-post="/raft/{{ entry.public_id }}/progres/"
+      hx-target="#progress-panel"
+      hx-swap="outerHTML"
+      hx-indicator="#progress-spinner"
+    >
+      {% csrf_token %}
+      <input type="hidden" id="progress-request-id" name="request_id" value="{{ request_id }}">
+
+      <div class="form-group">
+        <label for="id_page" class="form-label">{% translate "La ce pagină ai ajuns?" %}</label>
+        <div style="display: flex; gap: var(--space-3); align-items: center; max-width: 320px;">
+          <input
+            type="number"
+            name="page"
+            id="id_page"
+            class="form-control"
+            min="0"
+            max="{{ entry.page_count }}"
+            value="{{ entry.current_page }}"
+            required
+            aria-describedby="page-help"
+          >
+          <span style="color: var(--color-text-muted); font-size: var(--text-sm); white-space: nowrap;">
+            / {{ entry.page_count }}
+          </span>
+        </div>
+        <div id="page-help" class="form-hint">
+          {% translate "Introdu un număr între 0 și" %} {{ entry.page_count }}.
+        </div>
+      </div>
+
+      <div style="display: flex; gap: var(--space-3); align-items: center; margin-top: var(--space-5);">
+        <button type="submit" class="btn btn-primary">
+          <span>{% translate "Salvează pagina" %}</span>
+          <span id="progress-spinner" class="spinner htmx-indicator" aria-hidden="true"></span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Finish Book Form -->
+    <div style="margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3);">
+      <span style="font-size: var(--text-sm); color: var(--color-text-muted);">
+        {% translate "Ai citit toată cartea?" %}
+      </span>
+      <form 
+        method="post" 
+        action="/raft/{{ entry.public_id }}/terminat/"
+        hx-post="/raft/{{ entry.public_id }}/terminat/"
+        hx-target="#progress-panel"
+        hx-swap="outerHTML"
+      >
+        {% csrf_token %}
+        <input type="hidden" name="request_id" value="{{ request_id }}">
+        <button type="submit" class="btn btn-accent btn-sm">
+          🏆 {% translate "Marchează ca terminată" %}
+        </button>
+      </form>
+    </div>
+  {% else %}
+    <!-- Finished State -->
+    <div class="alert alert-success" style="margin-top: var(--space-4);">
+      <span aria-hidden="true">🌟</span>
+      <div>
+        <strong>{% translate "Felicitări! Ai finalizat această carte!" %}</strong>
+        <p style="margin-top: 4px; font-size: var(--text-xs);">
+          {% translate "Toate cele" %} {{ entry.page_count }} {% translate "de pagini au fost înregistrate în palmaresul tău de lectură." %}
+        </p>
+      </div>
+    </div>
+  {% endif %}
+</div>

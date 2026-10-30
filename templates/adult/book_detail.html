@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ book.title }} — Gustul Cărților{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: var(--space-4);">
+  <a href="/carti/" class="btn btn-outline btn-sm">
+    &larr; {% translate "Înapoi la catalog" %}
+  </a>
+</div>
+
+<div class="card" style="max-width: 800px; margin: 0 auto; padding: var(--space-8);">
+  <div class="grid-2col" style="align-items: center; gap: var(--space-8);">
+    <div>
+      <div class="book-cover" style="background-color: {{ book.cover_color|default:'#F4A261' }}; border-radius: var(--radius-lg); max-width: 280px; margin: 0 auto; box-shadow: var(--shadow-lg);">
+        <div class="book-cover-title" style="font-size: var(--text-xl);">{{ book.title }}</div>
+        <div class="book-cover-emoji" style="font-size: 5rem;" aria-hidden="true">{{ book.cover_emoji|default:'📖' }}</div>
+        <div class="book-cover-author" style="font-size: var(--text-sm);">{{ book.author }}</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="margin-bottom: var(--space-2);">
+        {% if book.age_band %}
+          <span class="badge badge-accent">{{ book.age_band }} {% translate "ani" %}</span>
+        {% endif %}
+        <span class="badge badge-primary">{{ book.genre }}</span>
+        <span class="badge">{{ book.page_count }} {% translate "pagini" %}</span>
+      </div>
+
+      <h1 style="margin-bottom: var(--space-2); font-size: var(--text-3xl);">{{ book.title }}</h1>
+      <p style="font-size: var(--text-lg); font-weight: var(--font-medium); color: var(--color-text-muted); margin-bottom: var(--space-6);">
+        {% translate "Autor" %}: {{ book.author }}
+      </p>
+
+      <p style="line-height: var(--leading-relaxed); margin-bottom: var(--space-6);">
+        {% translate "O lectură captivantă recomandată pentru dezvoltarea vocabularului, imaginației și dragostei de cărți." %}
+      </p>
+
+      <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-6);">
+        {% if not request.user.is_authenticated %}
+          <div style="display: flex; gap: var(--space-3); align-items: center;">
+            <a href="/cont/intrare/?next=/carti/{{ book.public_id }}/" class="btn btn-primary btn-lg">
+              {% translate "Conectează-te pentru a adăuga pe raft" %}
+            </a>
+          </div>
+        {% elif shelf_book_ids and book.public_id in shelf_book_ids %}
+          <div style="display: flex; gap: var(--space-3); align-items: center;">
+            <a href="/raft/" class="btn btn-outline btn-lg" style="border-color: var(--color-success); color: var(--color-success);">
+              ✓ {% translate "Cartea este pe raftul tău" %}
+            </a>
+          </div>
+        {% else %}
+          <form method="post" action="/carti/{{ book.public_id }}/adauga/">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-lg">
+              + {% translate "Adaugă pe raftul meu" %}
+            </button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

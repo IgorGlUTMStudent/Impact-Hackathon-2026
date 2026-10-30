@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Gustul Cărților — Jurnalul tău de lectură" %}{% endblock %}
+
+{% block content %}
+<div class="landing-hero" style="text-align: center; padding: var(--space-10) 0; max-width: 800px; margin: 0 auto;">
+  <span style="font-size: 3.5rem; display: block; margin-bottom: var(--space-4);" aria-hidden="true">📚✨</span>
+  <h1 style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: var(--space-4); color: var(--color-primary);">
+    {% translate "Descoperă bucuria de a citi în fiecare zi" %}
+  </h1>
+  <p style="font-size: var(--text-lg); line-height: var(--leading-relaxed); margin-bottom: var(--space-8); color: var(--color-text-muted);">
+    {% translate "Gustul Cărților este un jurnal de lectură prietenos și sigur pentru întreaga familie. Urmărește progresul, colecționează insigne și transformă lectura într-o aventură captivantă." %}
+  </p>
+  
+  <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; margin-bottom: var(--space-12);">
+    {% if request.user.is_authenticated or me %}
+      <a href="/panou/" class="btn btn-primary btn-lg">{% translate "Mergi la Panou" %}</a>
+      <a href="/raft/" class="btn btn-outline btn-lg">{% translate "Raftul meu" %}</a>
+    {% else %}
+      <a href="/cont/inregistrare/" class="btn btn-primary btn-lg">{% translate "Creează cont gratuit" %}</a>
+      <a href="/carti/" class="btn btn-outline btn-lg">{% translate "Explorează cărțile" %}</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="grid-cards" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-top: var(--space-6);">
+  <div class="card" style="border-top: 4px solid var(--color-primary);">
+    <div style="font-size: 2.25rem; margin-bottom: var(--space-3);" aria-hidden="true">📖</div>
+    <h2 class="card-title" style="margin-bottom: var(--space-2);">{% translate "Jurnal personalizat" %}</h2>
+    <p>{% translate "Înregistrează cărțile citite, pagină cu pagină. Fără presiune, într-un ritm adaptat fiecărui cititor." %}</p>
+  </div>
+
+  <div class="card" style="border-top: 4px solid var(--color-accent);">
+    <div style="font-size: 2.25rem; margin-bottom: var(--space-3);" aria-hidden="true">🛡️</div>
+    <h2 class="card-title" style="margin-bottom: var(--space-2);">{% translate "Mod Copil protejat" %}</h2>
+    <p>{% translate "Interfață intuitivă cu litere mari și mascotă prietenoasă, securizată printr-un cod PIN parental." %}</p>
+  </div>
+
+  <div class="card" style="border-top: 4px solid #10b981;">
+    <div style="font-size: 2.25rem; margin-bottom: var(--space-3);" aria-hidden="true">🏅</div>
+    <h2 class="card-title" style="margin-bottom: var(--space-2);">{% translate "Insigne și realizări" %}</h2>
+    <p>{% translate "Recompense vizuale la finalizarea cărților și atingerea pragurilor de lectură. Fiecare pas contează!" %}</p>
+  </div>
+</div>
+
+<div class="card" style="margin-top: var(--space-10); background: var(--color-surface-subtle); border-color: var(--color-border-subtle); text-align: center; padding: var(--space-8);">
+  <h2 style="margin-bottom: var(--space-2);">{% translate "Ai deja un cod de membru al clubului?" %}</h2>
+  <p style="margin-bottom: var(--space-4);">{% translate "Activează codul pentru a debloca activități speciale și insigne exclusive de membru." %}</p>
+  <a href="/club/cod/" class="btn btn-accent">{% translate "Activează codul de club" %}</a>
+</div>
+{% endblock %}

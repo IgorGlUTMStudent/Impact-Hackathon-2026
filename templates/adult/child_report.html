@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Raport lectură" %} {{ child.nickname }} — Gustul Cărților{% endblock %}
+
+{% block content %}
+<!-- Header with Child profile info & Child mode switch -->
+<div class="card" style="margin-bottom: var(--space-8);">
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-4);">
+    <div style="display: flex; align-items: center; gap: var(--space-4);">
+      <div class="child-avatar" style="width: 64px; height: 64px; font-size: 2rem;" aria-hidden="true">
+        {% if child.avatar == 'fox' %}🦊
+        {% elif child.avatar == 'owl' %}🦉
+        {% elif child.avatar == 'cat' %}🐱
+        {% elif child.avatar == 'bear' %}🐻
+        {% elif child.avatar == 'rabbit' %}🐰
+        {% elif child.avatar == 'hedgehog' %}🦔
+        {% elif child.avatar == 'squirrel' %}🐿️
+        {% elif child.avatar == 'turtle' %}🐢
+        {% else %}⭐{% endif %}
+      </div>
+      <div>
+        <h1 style="margin-bottom: 2px; font-size: var(--text-2xl);">{{ child.nickname }}</h1>
+        <div style="display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap;">
+          <span class="badge badge-accent">{% translate "Grupa de vârstă" %}: {{ child.age_band }} {% translate "ani" %}</span>
+          {% if is_member or has_active_membership %}
+            <span class="badge badge-primary">⭐ {% translate "Membru Club activ" %}</span>
+          {% else %}
+            <span class="badge">{% translate "Club inactiv" %}</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+      <a href="/familie/" class="btn btn-outline btn-sm">
+        &larr; {% translate "Înapoi la familie" %}
+      </a>
+      <form method="post" action="/familie/{{ child.public_id }}/mod-copil/">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-accent">
+          <span aria-hidden="true">🚀</span> {% translate "Activează Modul Copil" %}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Child Stats Grid -->
+<div class="stat-grid" style="margin-bottom: var(--space-8);">
+  <div class="stat-card primary">
+    <div class="stat-val">{{ stats.books_on_shelf|default:0 }}</div>
+    <div class="stat-label">{% translate "Cărți pe raft" %}</div>
+  </div>
+  <div class="stat-card primary">
+    <div class="stat-val">{{ stats.books_finished|default:0 }}</div>
+    <div class="stat-label">{% translate "Cărți finalizate" %}</div>
+  </div>
+  <div class="stat-card primary">
+    <div class="stat-val">{{ stats.pages_total|default:0 }}</div>
+    <div class="stat-label">{% translate "Total pagini citite" %}</div>
+  </div>
+  <div class="stat-card accent">
+    <div class="stat-val">{{ stats.pages_7d|default:0 }}</div>
+    <div class="stat-label">{% translate "Pagini în ultimele 7 zile" %}</div>
+  </div>
+</div>
+
+<div class="grid-2col">
+  <!-- Shelf Entries -->
+  <div>
+    <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-4);">{% translate "Cărți pe raftul copilului" %}</h2>
+    {% if entries %}
+      <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+        {% for entry in entries %}
+          <div class="card" style="padding: var(--space-4);">
+            <div style="display: flex; gap: var(--space-3); align-items: center;">
+              <div style="width: 50px; height: 70px; background-color: {{ entry.book.cover_color|default:'#F4A261' }}; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; flex-shrink: 0;" aria-hidden="true">
+                {{ entry.book.cover_emoji|default:'📖' }}
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: var(--font-bold); font-size: var(--text-base); color: var(--color-text);">
+                  {{ entry.book.title }}
+                </div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+                  {{ entry.book.author }} &middot; {{ entry.book.page_count }} pag.
+                </div>
+                
+                <div class="progress-container">
+                  <div class="progress-bar-track">
+                    <div class="progress-bar-fill" style="width: {{ entry.percent }}%;"></div>
+                  </div>
+                  <div class="progress-labels">
+                    <span>{{ entry.current_page }} / {{ entry.page_count }} {% translate "pagini" %}</span>
+                    <span>
+                      {% if entry.status == 'finished' %}
+                        <strong style="color: var(--color-success);">✓ {% translate "Finalizată" %}</strong>
+                      {% else %}
+                        {{ entry.percent }}%
+                      {% endif %}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>{% translate "Copilul nu are nicio carte adăugată pe raft încă." %}</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Grants & Club Entitlement -->
+  <div>
+    <!-- Grants -->
+    <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-4);">{% translate "Insigne obținute" %}</h2>
+    {% if grants %}
+      <div style="display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-6);">
+        {% for grant in grants %}
+          <div class="achievement-card">
+            <div class="achievement-icon" aria-hidden="true">
+              🏅
+            </div>
+            <div class="achievement-content">
+              <div class="achievement-title">{{ grant.title }}</div>
+              <div class="achievement-desc">
+                {% translate "Obținută la" %}: {{ grant.granted_at|date:"d M Y" }}
+                {% if grant.members_only %} &middot; <span class="badge badge-primary">Club</span>{% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state" style="padding: var(--space-6) var(--space-4); margin-bottom: var(--space-6);">
+        <p>{% translate "Copilul nu a obținut încă nicio insignă. Pe măsură ce citește, va debloca realizări!" %}</p>
+      </div>
+    {% endif %}
+
+    <!-- Club Membership status -->
+    <div class="card" style="background: var(--color-surface-subtle); border-color: var(--color-border-subtle);">
+      <h3 style="font-size: var(--text-base); margin-bottom: var(--space-2);">{% translate "Abonament Club Gustul Cărților" %}</h3>
+      {% if memberships %}
+        <div style="display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-4);">
+          {% for m in memberships %}
+            <div style="font-size: var(--text-sm); display: flex; justify-content: space-between; align-items: center; padding: var(--space-2); background: var(--color-surface); border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+              <span>{% translate "Valabil până la" %}: {{ m.valid_until|date:"d M Y" }}</span>
+              <span class="badge {% if m.status == 'active' and is_member %}badge-primary{% elif m.status == 'active' %}badge-accent{% else %}badge-outline{% endif %}">
+                {% if m.status == 'active' and is_member %}
+                  ✓ {% translate "Activ" %}
+                {% elif m.status == 'active' %}
+                  {% translate "Înregistrat" %}
+                {% elif m.status == 'expired' %}
+                  {% translate "Expirat" %}
+                {% elif m.status == 'revoked' %}
+                  {% translate "Revocat" %}
+                {% else %}
+                  {{ m.status }}
+                {% endif %}
+              </span>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="font-size: var(--text-sm); margin-bottom: var(--space-3);">
+          {% translate "Copilul nu are un istoric de membru al Clubului de lectură." %}
+        </p>
+        <a href="/club/cod/" class="btn btn-outline btn-sm">
+          {% translate "Activează un cod pentru acest copil" %} &rarr;
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

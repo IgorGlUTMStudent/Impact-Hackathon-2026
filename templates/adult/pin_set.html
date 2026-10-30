@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Configurare PIN parental — Gustul Cărților" %}{% endblock %}
+
+{% block content %}
+<div style="max-width: 460px; margin: var(--space-8) auto;">
+  <div class="card">
+    <div style="text-align: center; margin-bottom: var(--space-6);">
+      <span style="font-size: 2.5rem;" aria-hidden="true">🔑</span>
+      <h1 style="font-size: var(--text-2xl); margin-top: var(--space-2); margin-bottom: var(--space-1);">
+        {% translate "Configurare PIN parental" %}
+      </h1>
+      <p style="font-size: var(--text-sm);">
+        {% translate "Setează un cod din 4–6 cifre pentru a ieși în siguranță din Modul Copil înapoi în contul tău de părinte." %}
+      </p>
+    </div>
+
+    {% if form.errors or error or errors %}
+      <div class="alert alert-error" role="alert">
+        <span aria-hidden="true">⚠</span>
+        <div>
+          {% if form.non_field_errors %}
+            {% for err in form.non_field_errors %}
+              <div>{{ err }}</div>
+            {% endfor %}
+          {% elif error %}
+            <div>{{ error }}</div>
+          {% elif errors %}
+            {% for err in errors %}
+              <div>{{ err }}</div>
+            {% endfor %}
+          {% else %}
+            <div>{% translate "Verifică PIN-ul introdus și parola contului." %}</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    <form method="post" action="/familie/pin/" novalidate>
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="id_pin" class="form-label">{% translate "Cod PIN nou (4–6 cifre)" %}</label>
+        <input 
+          type="password" 
+          inputmode="numeric" 
+          pattern="[0-9]{4,6}" 
+          name="pin" 
+          id="id_pin" 
+          class="form-control" 
+          required 
+          minlength="4" 
+          maxlength="6"
+          placeholder="••••"
+          autocomplete="off"
+          {% if form.pin.errors %}aria-invalid="true"{% endif %}
+        >
+        <div class="form-hint">{% translate "Doar cifre (0–9). Alege un cod pe care copilul nu îl ghicește ușor." %}</div>
+        {% if form.pin.errors %}
+          <div class="field-error">
+            <span>⚠</span> {{ form.pin.errors.0 }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="id_pin_confirm" class="form-label">{% translate "Confirmă codul PIN" %}</label>
+        <input 
+          type="password" 
+          inputmode="numeric" 
+          pattern="[0-9]{4,6}" 
+          name="pin_confirm" 
+          id="id_pin_confirm" 
+          class="form-control" 
+          required 
+          minlength="4" 
+          maxlength="6"
+          placeholder="••••"
+          autocomplete="off"
+          {% if form.pin_confirm.errors %}aria-invalid="true"{% endif %}
+        >
+        {% if form.pin_confirm.errors %}
+          <div class="field-error">
+            <span>⚠</span> {{ form.pin_confirm.errors.0 }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="form-group" style="border-top: 1px solid var(--color-border); padding-top: var(--space-4); margin-top: var(--space-4);">
+        <label for="id_password" class="form-label">{% translate "Parola contului de părinte" %}</label>
+        <input 
+          type="password" 
+          name="password" 
+          id="id_password" 
+          class="form-control" 
+          autocomplete="current-password" 
+          required
+          placeholder="••••••••"
+          {% if form.password.errors %}aria-invalid="true"{% endif %}
+        >
+        <div class="form-hint">{% translate "Pentru securitate, confirmă parola ta de adult înainte de a salva PIN-ul." %}</div>
+        {% if form.password.errors %}
+          <div class="field-error">
+            <span>⚠</span> {{ form.password.errors.0 }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div style="display: flex; gap: var(--space-3); margin-top: var(--space-6);">
+        <a href="/familie/" class="btn btn-outline" style="flex: 1;">{% translate "Renunță" %}</a>
+        <button type="submit" class="btn btn-primary" style="flex: 2;">
+          {% translate "Salvează PIN-ul" %}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

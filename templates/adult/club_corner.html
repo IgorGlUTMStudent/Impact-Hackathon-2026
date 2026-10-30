@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Clubul de lectură — Gustul Cărților" %}{% endblock %}
+
+{% block content %}
+<div class="card" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #ffffff; padding: var(--space-8); margin-bottom: var(--space-8); border: none;">
+  <div style="max-width: 680px;">
+    <span class="badge" style="background: rgba(255,255,255,0.2); color: #fff; margin-bottom: var(--space-3); border: none;">
+      ⭐ {% translate "Membru activ al Clubului" %}
+    </span>
+    <h1 style="color: #ffffff; font-size: var(--text-3xl); margin-bottom: var(--space-2);">
+      {% translate "Clubul de Lectură Gustul Cărților" %}
+    </h1>
+    <p style="color: rgba(255,255,255,0.9); font-size: var(--text-base); margin-bottom: 0;">
+      {% translate "Bun venit în comunitatea noastră de cititori pasionați! Participă la cercuri de lectură, întâlniri cu autori și ateliere interactive." %}
+    </p>
+  </div>
+</div>
+
+<div class="grid-2col" style="gap: var(--space-8); align-items: start;">
+  <!-- Scheduled Activities -->
+  <div>
+    <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-4);">
+      {% translate "Evenimente și Ateliere programate" %}
+    </h2>
+
+    {% if activities %}
+      <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+        {% for act in activities %}
+          <div class="card" style="padding: var(--space-5);">
+            <div style="display: flex; align-items: start; gap: var(--space-3);">
+              <div style="background: var(--color-surface-subtle); border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); text-align: center; min-width: 70px;">
+                <div style="font-size: var(--text-xs); text-transform: uppercase; font-weight: var(--font-bold); color: var(--color-primary);">
+                  {{ act.starts_at|date:"M" }}
+                </div>
+                <div style="font-size: var(--text-2xl); font-weight: var(--font-bold); color: var(--color-text);">
+                  {{ act.starts_at|date:"d" }}
+                </div>
+              </div>
+              <div style="flex: 1;">
+                <h3 style="font-size: var(--text-lg); margin-bottom: 4px;">{{ act.title }}</h3>
+                <div style="font-size: var(--text-xs); color: var(--color-text-muted); display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                  <span>🕒 {{ act.starts_at|date:"H:i" }}</span>
+                  <span>📍 {{ act.place }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <span class="empty-icon" aria-hidden="true">📅</span>
+        <h3 class="empty-title">{% translate "Nu sunt activități programate momentan" %}</h3>
+        <p class="empty-desc">{% translate "Revin-o în curând pentru noi întâlniri și cluburi tematice." %}</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Club Benefits & Resources -->
+  <div>
+    <div class="card">
+      <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-3);">{% translate "Beneficiile de membru" %}</h2>
+      <ul style="padding-left: var(--space-5); color: var(--color-text-muted); line-height: var(--leading-relaxed);">
+        <li style="margin-bottom: var(--space-2);">
+          <strong>{% translate "Insigne de colecție:" %}</strong> {% translate "Acces la realizări exclusive dedicate clubului." %}
+        </li>
+        <li style="margin-bottom: var(--space-2);">
+          <strong>{% translate "Întâlniri online:" %}</strong> {% translate "Seri de lectură cu voce tare și dezbateri prietenoase." %}
+        </li>
+        <li style="margin-bottom: var(--space-2);">
+          <strong>{% translate "Recomandări ghidate:" %}</strong> {% translate "Ghiduri lunare de lectură adaptate fiecărei grupe de vârstă." %}
+        </li>
+      </ul>
+      <div style="margin-top: var(--space-6); border-top: 1px solid var(--color-border); padding-top: var(--space-4);">
+        <a href="/carti/" class="btn btn-outline btn-block">
+          {% translate "Vezi cărțile recomandate de club" %} &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

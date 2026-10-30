@@ -1,0 +1,17 @@
+{% load i18n %}
+<div id="toast-container" aria-live="polite" aria-atomic="true">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="toast toast-{{ message.tags|default:'info' }}" role="{% if message.tags == 'error' %}alert{% else %}status{% endif %}" aria-live="polite">
+        <span class="toast-icon">
+          {% if message.tags == 'success' %}✓
+          {% elif message.tags == 'error' %}✕
+          {% elif message.tags == 'warning' %}⚠
+          {% else %}ℹ{% endif %}
+        </span>
+        <span class="toast-message">{{ message }}</span>
+        <button type="button" class="toast-close" aria-label="{% translate 'Închide notificarea' %}" onclick="this.closest('.toast').remove();">&times;</button>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>

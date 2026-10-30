@@ -1,0 +1,50 @@
+# Romanian translations for Gustul Cărților
+msgid ""
+msgstr ""
+"Project-Id-Version: gustul-cartilor 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-30 14:00+0200\n"
+"PO-Revision-Date: 2026-10-30 14:00+0200\n"
+"Last-Translator: Vladimir Barbalat\n"
+"Language-Team: Romanian\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+msgid "Gustul Cărților"
+msgstr "Gustul Cărților"
+
+msgid "Panou"
+msgstr "Panou"
+
+msgid "Raftul meu"
+msgstr "Raftul meu"
+
+msgid "Catalog cărți"
+msgstr "Catalog cărți"
+
+msgid "Familie"
+msgstr "Familie"
+
+msgid "Realizări"
+msgstr "Realizări"
+
+msgid "Club"
+msgstr "Club"
+
+msgid "Conectare"
+msgstr "Conectare"
+
+msgid "Înregistrare"
+msgstr "Înregistrare"
+
+msgid "Ieșire"
+msgstr "Ieșire"
+
+msgid "Salvează pagina"
+msgstr "Salvează pagina"
+
+msgid "Marchează ca terminată"
+msgstr "Marchează ca terminată"

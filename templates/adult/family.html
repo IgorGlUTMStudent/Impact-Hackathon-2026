@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Gestionare Familie — Gustul Cărților" %}{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-6);">
+  <div>
+    <h1>{% translate "Familia mea" %}</h1>
+    <p>{% translate "Gestionează profilurile copiilor și securitatea accesului prin PIN parental." %}</p>
+  </div>
+  <div>
+    <a href="/familie/pin/" class="btn btn-outline">
+      <span aria-hidden="true">🔑</span> {% translate "Setare / Schimbare PIN" %}
+    </a>
+  </div>
+</div>
+
+<!-- PIN Banner / Info -->
+<div class="card" style="background: var(--color-surface-subtle); border-color: var(--color-border-subtle); margin-bottom: var(--space-8); padding: var(--space-4) var(--space-6); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3);">
+  <div style="display: flex; align-items: center; gap: var(--space-3);">
+    <span style="font-size: 1.75rem;" aria-hidden="true">🔒</span>
+    <div>
+      <div style="font-weight: var(--font-bold); color: var(--color-text);">{% translate "Securitate Mod Copil" %}</div>
+      <div style="font-size: var(--text-sm); color: var(--color-text-muted);">
+        {% if pin_set %}
+          {% translate "PIN-ul parental este activ. Acesta protejează ieșirea din Modul Copil." %}
+        {% else %}
+          {% translate "PIN-ul nu este setat. Configurează un PIN pentru a putea activa Modul Copil în siguranță." %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <a href="/familie/pin/" class="btn btn-sm btn-outline">
+    {% if pin_set %}{% translate "Schimbă PIN" %}{% else %}{% translate "Configurare PIN" %}{% endif %} &rarr;
+  </a>
+</div>
+
+{% if errors %}
+  <div class="alert alert-error" role="alert">
+    <span aria-hidden="true">⚠</span>
+    <div>
+      {% for err in errors %}
+        <div>{{ err }}</div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+{% if form.non_field_errors %}
+  <div class="alert alert-error" role="alert">
+    <span aria-hidden="true">⚠</span>
+    <div>
+      {% for err in form.non_field_errors %}
+        <div>{{ err }}</div>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+<div class="grid-2col">
+  <!-- Children list -->
+  <div>
+    <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-4);">
+      {% translate "Profiluri existente" %} 
+      <span class="badge badge-primary">
+        {% if children %}{{ children|length }}{% else %}0{% endif %} / 6
+      </span>
+    </h2>
+
+    {% if children %}
+      <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+        {% for item in children %}
+          {% with c=item.child|default:item %}
+            <div class="card" style="padding: var(--space-4);">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);">
+                <div style="display: flex; align-items: center; gap: var(--space-3);">
+                  <div class="child-avatar" style="width: 44px; height: 44px; font-size: 1.25rem;" aria-hidden="true">
+                    {% if c.avatar == 'fox' %}🦊
+                    {% elif c.avatar == 'owl' %}🦉
+                    {% elif c.avatar == 'cat' %}🐱
+                    {% elif c.avatar == 'bear' %}🐻
+                    {% elif c.avatar == 'rabbit' %}🐰
+                    {% elif c.avatar == 'hedgehog' %}🦔
+                    {% elif c.avatar == 'squirrel' %}🐿️
+                    {% elif c.avatar == 'turtle' %}🐢
+                    {% else %}⭐{% endif %}
+                  </div>
+                  <div>
+                    <h3 style="margin-bottom: 0; font-size: var(--text-base);">{{ c.nickname }}</h3>
+                    <span style="font-size: var(--text-xs); color: var(--color-text-light);">
+                      {% translate "Grupa de vârstă" %}: {{ c.age_band }} {% translate "ani" %}
+                    </span>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: var(--space-2); align-items: center;">
+                  <a href="/familie/{{ c.public_id }}/" class="btn btn-outline btn-sm" title="{% translate 'Raport lectură' %}">
+                    {% translate "Raport" %}
+                  </a>
+                  <details style="position: relative;" {% if rename_child and rename_child.public_id == c.public_id %}open{% endif %}>
+                    <summary class="btn btn-outline btn-sm" style="list-style: none; cursor: pointer; padding: var(--space-1) var(--space-2);" aria-label="{% translate 'Opțiuni profil' %}">
+                      ⚙️
+                    </summary>
+                    <div style="position: absolute; right: 0; top: 100%; margin-top: 4px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); padding: var(--space-3); z-index: 50; width: 220px;">
+                      <!-- Rename Form -->
+                      <form method="post" action="/familie/{{ c.public_id }}/editeaza/" style="margin-bottom: var(--space-3);">
+                        {% csrf_token %}
+                        <label for="rename-{{ c.public_id }}" style="font-size: var(--text-xs); font-weight: bold; display: block; margin-bottom: 4px;">
+                          {% translate "Redenumește" %}
+                        </label>
+                        <input
+                          type="text"
+                          id="rename-{{ c.public_id }}"
+                          name="nickname"
+                          value="{% if rename_child and rename_child.public_id == c.public_id and rename_form.nickname.value %}{{ rename_form.nickname.value }}{% else %}{{ c.nickname }}{% endif %}"
+                          class="form-control"
+                          style="font-size: var(--text-xs); padding: 4px 8px; margin-bottom: 6px;"
+                          required
+                          minlength="2"
+                          maxlength="20"
+                          {% if rename_child and rename_child.public_id == c.public_id and rename_form.nickname.errors %}aria-invalid="true"{% endif %}
+                        >
+                        {% if rename_child and rename_child.public_id == c.public_id and rename_form.nickname.errors %}
+                          <div class="field-error" style="font-size: 11px; margin-bottom: 6px;">
+                            <span>⚠</span> {{ rename_form.nickname.errors.0 }}
+                          </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-outline btn-sm btn-block" style="font-size: var(--text-xs);">
+                          {% translate "Salvează numele" %}
+                        </button>
+                      </form>
+                      <!-- Delete Form with Confirmation (confirm=1 hidden input required by backend) -->
+                      <form method="post" action="/familie/{{ c.public_id }}/sterge/" onsubmit="return confirm('{% translate "Sigur dorești să ștergi acest profil de copil? Datele de lectură nu vor mai putea fi recuperate." %}');">
+                        {% csrf_token %}
+                        <input type="hidden" name="confirm" value="1">
+                        <button type="submit" class="btn btn-danger btn-sm btn-block" style="font-size: var(--text-xs);">
+                          {% translate "Șterge profilul" %}
+                        </button>
+                      </form>
+                    </div>
+                  </details>
+                </div>
+              </div>
+            </div>
+          {% endwith %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state" style="padding: var(--space-8) var(--space-4);">
+        <p>{% translate "Nu ai adăugat niciun copil încă." %}</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Add child form -->
+  <div>
+    <div class="card">
+      <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">{% translate "Adaugă un copil" %}</h2>
+      <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">
+        {% translate "Poți adăuga până la 6 copii în contul tău de familie." %}
+      </p>
+
+      {% if can_add_child == False or children|length >= 6 %}
+        <div class="alert alert-info">
+          {% translate "Ai atins limita maximă de 6 copii per cont de familie." %}
+        </div>
+      {% else %}
+        <form method="post" action="/familie/">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label for="id_nickname" class="form-label">{% translate "Pseudonim / Prenume copil" %}</label>
+            <input
+              type="text"
+              name="nickname"
+              id="id_nickname"
+              class="form-control"
+              required
+              minlength="2"
+              maxlength="20"
+              value="{{ form.nickname.value|default:'' }}"
+              placeholder="Ex: Mia, Andrei, Radu"
+              {% if form.nickname.errors %}aria-invalid="true"{% endif %}
+            >
+            <div class="form-hint">{% translate "Între 2 și 20 de caractere. Nu folosi numele de familie complet." %}</div>
+            {% if form.nickname.errors %}
+              <div class="field-error">
+                <span>⚠</span> {{ form.nickname.errors.0 }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label for="id_age_band" class="form-label">{% translate "Grupa de vârstă" %}</label>
+            <select name="age_band" id="id_age_band" class="form-control" required {% if form.age_band.errors %}aria-invalid="true"{% endif %}>
+              <option value="7-8" {% if form.age_band.value == '7-8' %}selected{% endif %}>{% translate "7–8 ani (Începători)" %}</option>
+              <option value="9-11" {% if form.age_band.value == '9-11' or not form.age_band.value %}selected{% endif %}>{% translate "9–11 ani (Cititori independenți)" %}</option>
+              <option value="12-15" {% if form.age_band.value == '12-15' %}selected{% endif %}>{% translate "12–15 ani (Adolescenți)" %}</option>
+            </select>
+            {% if form.age_band.errors %}
+              <div class="field-error">
+                <span>⚠</span> {{ form.age_band.errors.0 }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{% translate "Alege avatarul" %}</label>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-2); margin-top: var(--space-1);">
+              <label style="border: 2px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2); text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center;">
+                <input type="radio" name="avatar" value="fox" {% if form.avatar.value == 'fox' or not form.avatar.value %}checked{% endif %} style="margin-bottom: 4px;">
+                <span style="font-size: 1.75rem;" aria-hidden="true">🦊</span>
+                <span style="font-size: var(--text-xs); color: var(--color-text-muted);">{% translate "Vulpe" %}</span>
+              </label>
+              <label style="border: 2px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2); text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center;">
+                <input type="radio" name="avatar" value="owl" {% if form.avatar.value == 'owl' %}checked{% endif %} style="margin-bottom: 4px;">
+                <span style="font-size: 1.75rem;" aria-hidden="true">🦉</span>
+                <span style="font-size: var(--text-xs); color: var(--color-text-muted);">{% translate "Bufniță" %}</span>
+              </label>
+              <label style="border: 2px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2); text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center;">
+                <input type="radio" name="avatar" value="bear" {% if form.avatar.value == 'bear' %}checked{% endif %} style="margin-bottom: 4px;">
+                <span style="font-size: 1.75rem;" aria-hidden="true">🐻</span>
+                <span style="font-size: var(--text-xs); color: var(--color-text-muted);">{% translate "Urs" %}</span>
+              </label>
+              <label style="border: 2px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2); text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center;">
+                <input type="radio" name="avatar" value="rabbit" {% if form.avatar.value == 'rabbit' %}checked{% endif %} style="margin-bottom: 4px;">
+                <span style="font-size: 1.75rem;" aria-hidden="true">🐰</span>
+                <span style="font-size: var(--text-xs); color: var(--color-text-muted);">{% translate "Iepure" %}</span>
+              </label>
+            </div>
+            {% if form.avatar.errors %}
+              <div class="field-error">
+                <span>⚠</span> {{ form.avatar.errors.0 }}
+              </div>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top: var(--space-4);">
+            {% translate "Creează profilul" %}
+          </button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

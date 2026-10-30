@@ -1,0 +1,90 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'ro' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="{% block meta_description %}{% translate 'Gustul Cărților — Jurnal de lectură prietenos pentru copii și părinți.' %}{% endblock %}">
+  <title>{% block title %}{% translate 'Gustul Cărților' %}{% endblock %}</title>
+  
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block extra_css %}{% endblock %}
+  
+  <script src="{% static 'js/htmx.min.js' %}" defer></script>
+  <script src="{% static 'js/app.js' %}" defer></script>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  <a href="#main-content" class="skip-link">{% translate "Sari la conținutul principal" %}</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{% if request.session.mode == 'child' %}/copil/{% elif request.user.is_authenticated or me %}/panou/{% else %}/{% endif %}" class="brand-link" aria-label="{% translate 'Pagina principală Gustul Cărților' %}">
+        <span class="brand-icon" aria-hidden="true">📖</span>
+        <span>Gustul Cărților</span>
+      </a>
+
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-label="{% translate 'Deschide meniul' %}" aria-expanded="false" aria-controls="nav-menu">
+        <span aria-hidden="true">☰</span>
+      </button>
+
+      <nav aria-label="{% translate 'Navigare principală' %}">
+        <ul id="nav-menu" class="nav-menu">
+          {% if request.session.mode == 'child' %}
+            <li><a href="/copil/" class="nav-link">{% translate "Acasă" %}</a></li>
+            <li><a href="/carti/" class="nav-link">{% translate "Catalog cărți" %}</a></li>
+            <li><a href="/parinte/" class="btn btn-outline btn-sm">🔒 {% translate "Mod Părinte" %}</a></li>
+            <li class="nav-user">
+              <form method="post" action="/cont/iesire/" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline btn-sm">{% translate "Ieșire" %}</button>
+              </form>
+            </li>
+          {% elif request.user.is_authenticated or me %}
+            <li><a href="/panou/" class="nav-link {% if request.path == '/panou/' %}active{% endif %}">{% translate "Panou" %}</a></li>
+            <li><a href="/raft/" class="nav-link {% if request.path == '/raft/' %}active{% endif %}">{% translate "Raftul meu" %}</a></li>
+            <li><a href="/carti/" class="nav-link {% if request.path == '/carti/' %}active{% endif %}">{% translate "Catalog cărți" %}</a></li>
+            <li><a href="/familie/" class="nav-link {% if request.path == '/familie/' %}active{% endif %}">{% translate "Familie" %}</a></li>
+            <li><a href="/realizari/" class="nav-link {% if request.path == '/realizari/' %}active{% endif %}">{% translate "Realizări" %}</a></li>
+            <li><a href="/clubul-meu/" class="nav-link {% if request.path == '/clubul-meu/' %}active{% endif %}">{% translate "Club" %}</a></li>
+            <li class="nav-user">
+              <span class="user-badge" title="{% translate 'Utilizator conectat' %}">
+                👤 {% if me.display_name %}{{ me.display_name }}{% elif request.user.is_authenticated %}{{ request.user.display_name }}{% else %}{% translate "Contul meu" %}{% endif %}
+              </span>
+              <form method="post" action="/cont/iesire/" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline btn-sm">{% translate "Ieșire" %}</button>
+              </form>
+            </li>
+          {% else %}
+            <li><a href="/carti/" class="nav-link">{% translate "Catalog cărți" %}</a></li>
+            <li><a href="/cont/intrare/" class="nav-link">{% translate "Conectare" %}</a></li>
+            <li><a href="/cont/inregistrare/" class="btn btn-primary btn-sm">{% translate "Înregistrare" %}</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content" class="main-content">
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  {% include "_toast.html" %}
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>Gustul Cărților</strong> &copy; 2026. {% translate "Jurnal de lectură dedicat comunității și bucuriei de a citi." %}
+      </div>
+      <div>
+        <a href="/carti/">{% translate "Cărți" %}</a> &middot;
+        <a href="/club/cod/">{% translate "Cod de acces Club" %}</a>
+      </div>
+    </div>
+  </footer>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Raftul meu de cărți — Gustul Cărților" %}{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-6);">
+  <div>
+    <h1>{% translate "Raftul meu de cărți" %}</h1>
+    <p>{% translate "Cărțile tale personale, istoricul paginilor și realizările de lectură ca adult." %}</p>
+  </div>
+  <div>
+    <a href="/carti/" class="btn btn-primary">
+      <span aria-hidden="true">+</span> {% translate "Adaugă cărți din catalog" %}
+    </a>
+  </div>
+</div>
+
+<!-- Reader Stats -->
+{% if stats %}
+  <div class="stat-grid" style="margin-bottom: var(--space-8);">
+    <div class="stat-card primary">
+      <div class="stat-val">{{ stats.books_on_shelf }}</div>
+      <div class="stat-label">{% translate "Cărți pe raft" %}</div>
+    </div>
+    <div class="stat-card primary">
+      <div class="stat-val">{{ stats.books_finished }}</div>
+      <div class="stat-label">{% translate "Cărți finalizate" %}</div>
+    </div>
+    <div class="stat-card primary">
+      <div class="stat-val">{{ stats.pages_total }}</div>
+      <div class="stat-label">{% translate "Total pagini citite" %}</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="stat-val">{{ stats.pages_7d }}</div>
+      <div class="stat-label">{% translate "Pagini în ultimele 7 zile" %}</div>
+    </div>
+  </div>
+{% endif %}
+
+<!-- Entries List / Grid -->
+{% if entries %}
+  <div class="grid-cards">
+    {% for entry in entries %}
+      <div class="book-card">
+        <a href="/raft/{{ entry.public_id }}/" style="text-decoration: none;" aria-label="{{ entry.book.title }} - {{ entry.book.author }}">
+          <div class="book-cover" style="background-color: {{ entry.book.cover_color|default:'#F4A261' }};">
+            <div class="book-cover-title">{{ entry.book.title }}</div>
+            <div class="book-cover-emoji" aria-hidden="true">{{ entry.book.cover_emoji|default:'📖' }}</div>
+            <div class="book-cover-author">{{ entry.book.author }}</div>
+          </div>
+        </a>
+        <div class="book-body">
+          <div class="progress-container">
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" style="width: {{ entry.percent }}%;"></div>
+            </div>
+            <div class="progress-labels">
+              <span>{{ entry.current_page }} / {{ entry.page_count }} pag.</span>
+              <span>
+                {% if entry.status == 'finished' %}
+                  <strong style="color: var(--color-success);">✓ {% translate "Gata" %}</strong>
+                {% else %}
+                  {{ entry.percent }}%
+                {% endif %}
+              </span>
+            </div>
+          </div>
+
+          <div style="margin-top: var(--space-3);">
+            <a href="/raft/{{ entry.public_id }}/" class="btn btn-outline btn-sm btn-block">
+              {% if entry.status == 'finished' %}
+                {% translate "Revezi detalii" %}
+              {% else %}
+                {% translate "Continuă lectura" %} &rarr;
+              {% endif %}
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state">
+    <span class="empty-icon" aria-hidden="true">📖</span>
+    <h2 class="empty-title">{% translate "Raftul tău este gol" %}</h2>
+    <p class="empty-desc">{% translate "Nu ai adăugat încă nicio carte în jurnalul tău personal. Alege o carte din catalogul nostru pentru a începe." %}</p>
+    <a href="/carti/" class="btn btn-primary">{% translate "Răsfoiește catalogul" %}</a>
+  </div>
+{% endif %}
+{% endblock %}
