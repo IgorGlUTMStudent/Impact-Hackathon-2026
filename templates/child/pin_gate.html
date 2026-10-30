@@ -1,0 +1,109 @@
+{% extends "child/base.html" %}
+{% load static i18n %}
+
+{% block title %}Gustul Cărților — Zonă pentru Părinți{% endblock %}
+
+{% block content %}
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <a href="/copil/" class="child-exit-btn">
+      <span>⬅️</span>
+      <span>{% translate "Înapoi la lectură" %}</span>
+    </a>
+  </div>
+
+  <div class="pin-gate-box">
+    <span style="font-size: 3rem;">🔒</span>
+    <div>
+      <h1 style="font-size: 1.35rem; font-weight: 800;">{% translate "Zonă pentru părinți" %}</h1>
+      <p style="font-size: 0.95rem; color: var(--child-text-muted); margin-top: 4px;">
+        {% translate "Introdu codul PIN pentru a accesa panoul de control." %}
+      </p>
+    </div>
+
+    <!-- Error & lock alerts -->
+    {% if errors %}
+      <div class="child-alert-error" role="alert">
+        {% for err in errors %}
+          <p>⚠️ {{ err }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if locked_seconds %}
+      <div class="child-alert-error" role="alert">
+        <p>⏳ {% translate "Prea multe încercări greșite. Încearcă din nou în" %} {{ locked_seconds }} {% translate "secunde." %}</p>
+      </div>
+    {% endif %}
+
+    <!-- PIN Form -->
+    <form action="/parinte/" method="post" id="pin-form" style="display: flex; flex-direction: column; gap: 16px;">
+      {% csrf_token %}
+      
+      <div>
+        <label for="pin-input" class="sr-only" style="display: none;">{% translate "Cod PIN" %}</label>
+        <input type="password"
+               name="pin"
+               id="pin-input"
+               class="pin-display"
+               maxlength="6"
+               autocomplete="off"
+               inputmode="numeric"
+               pattern="[0-9]*"
+               required
+               placeholder="••••"
+               {% if locked_seconds %}disabled{% endif %}>
+      </div>
+
+      <!-- On-screen Numeric Keypad for Ergonomic Phone Tap -->
+      <div class="keypad-grid" role="group" aria-label="Tastatură numerică PIN">
+        <button type="button" class="keypad-btn" onclick="pressDigit('1')" {% if locked_seconds %}disabled{% endif %}>1</button>
+        <button type="button" class="keypad-btn" onclick="pressDigit('2')" {% if locked_seconds %}disabled{% endif %}>2</button>
+        <button type="button" class="keypad-btn" onclick="pressDigit('3')" {% if locked_seconds %}disabled{% endif %}>3</button>
+        <button type="button" class="keypad-btn" onclick="pressDigit('4')" {% if locked_seconds %}disabled{% endif %}>4</button>
+        <button type="button" class="keypad-btn" onclick="pressDigit('5')" {% if locked_seconds %}disabled{% endif %}>5</button>
+        <button type="button" class="keypad-btn" onclick="pressDigit('6')" {% if locked_seconds %}disabled{% endif %}>6</button>
+        <button type="button" class="keypad-btn" onclick="pressDigit('7')" {% if locked_seconds %}disabled{% endif %}>7</button>
+        <button type="button" class="keypad-btn" onclick="pressDigit('8')" {% if locked_seconds %}disabled{% endif %}>8</button>
+        <button type="button" class="keypad-btn" onclick="pressDigit('9')" {% if locked_seconds %}disabled{% endif %}>9</button>
+        <button type="button" class="keypad-btn" style="font-size: 1.1rem; color: var(--child-danger);" onclick="clearPin()" {% if locked_seconds %}disabled{% endif %}>C</button>
+        <button type="button" class="keypad-btn" onclick="pressDigit('0')" {% if locked_seconds %}disabled{% endif %}>0</button>
+        <button type="button" class="keypad-btn" style="font-size: 1.1rem;" onclick="backspacePin()" {% if locked_seconds %}disabled{% endif %}>⌫</button>
+      </div>
+
+      <button type="submit" class="btn-child btn-child-primary" style="margin-top: 8px;" {% if locked_seconds %}disabled{% endif %}>
+        <span>🔓</span>
+        <span>{% translate "Deblochează" %}</span>
+      </button>
+    </form>
+
+    <!-- Emergency PIN Recovery (Logout) -->
+    <div style="margin-top: 14px; border-top: 1px solid var(--child-border); padding-top: 16px;">
+      <form action="/cont/iesire/" method="post">
+        {% csrf_token %}
+        <button type="submit" style="background: none; border: none; color: var(--child-text-muted); font-size: 0.9rem; text-decoration: underline; cursor: pointer; padding: 8px;">
+          {% translate "Am uitat PIN-ul — ieși din cont" %}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function pressDigit(d) {
+      const pin = document.getElementById('pin-input');
+      if (pin && pin.value.length < 6) {
+        pin.value += d;
+      }
+    }
+    function clearPin() {
+      const pin = document.getElementById('pin-input');
+      if (pin) pin.value = '';
+    }
+    function backspacePin() {
+      const pin = document.getElementById('pin-input');
+      if (pin && pin.value.length > 0) {
+        pin.value = pin.value.slice(0, -1);
+      }
+    }
+  </script>
+{% endblock %}
+

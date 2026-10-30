@@ -1,0 +1,50 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gustul Cărților — Fără conexiune</title>
+  <meta name="theme-color" content="#3B82F6">
+  <link rel="stylesheet" href="{% static 'css/child.css' %}">
+</head>
+<body>
+  <div class="child-app">
+    <header class="child-header" style="justify-content: center;">
+      <span style="font-size: 1.25rem; font-weight: 800; color: var(--child-primary);">
+        📖 Gustul Cărților
+      </span>
+    </header>
+
+    <main class="child-content" style="justify-content: center; align-items: center; text-align: center; padding: 32px 20px;">
+      <!-- Mascot Oops -->
+      <div style="margin-bottom: 20px;">
+        <img src="{% static 'img/mascot/mascot-oops.svg' %}" alt="Gusti" style="width: 110px; height: 110px; margin: 0 auto;">
+      </div>
+
+      <h1 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 12px;">
+        {% translate "Nu am internet acum" %}
+      </h1>
+
+      <div class="mascot-bubble" style="max-width: 320px; margin-bottom: 24px;">
+        <p class="mascot-text" style="font-size: 1.05rem;">
+          {{ mascot.text|default:"Nu am internet acum. Încercăm mai târziu?" }}
+        </p>
+      </div>
+
+      <div style="background: var(--child-surface); border: 2px solid var(--child-border); border-radius: var(--radius-lg); padding: 20px; max-width: 340px; margin-bottom: 24px;">
+        <p style="font-size: 0.95rem; color: var(--child-text-muted); line-height: 1.5;">
+          {% translate "Nu-ți face griji, datele tale sunt în siguranță! Când revine conexiunea la internet, vei putea salva noi pagini citite." %}
+        </p>
+      </div>
+
+      <div style="width: 100%; max-width: 320px;">
+        <button type="button" class="btn-child btn-child-primary" onclick="window.location.reload()">
+          <span>🔄</span>
+          <span>{% translate "Reîncearcă acum" %}</span>
+        </button>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
