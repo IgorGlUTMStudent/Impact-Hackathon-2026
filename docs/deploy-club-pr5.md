@@ -43,8 +43,11 @@ Commands used the local `.tools/uv.exe` executable (not committed).
 - Full local `uv run pytest`: **66 passed, 4 failed in 61.71s**. The same four
   unchanged Windows subprocess failures remain; both prior Linux CI failures
   and all new form/permissions/deletion tests pass locally.
-- Ubuntu CI for this fix: pending push; final run URL/result will be attached
-  to PR #20. No Linux PASS is claimed before the actual workflow completes.
+- Ubuntu/Python 3.12 CI for fix commit `b3e6167`: **101 passed in 18.18s**;
+  system check and migration-drift check also passed. GitHub tests the PR merge
+  ref, so its test count can include additions from the current base branch.
+  Evidence: https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/actions/runs/41073163154
+  (job 124122250973). Subsequent documentation-only HEAD checks are linked in PR #20.
 
 ## Review fixes (2026-10-30)
 
