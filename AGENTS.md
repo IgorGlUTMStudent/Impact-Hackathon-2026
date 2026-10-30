@@ -31,8 +31,9 @@ Universal guidance for AI coding agents (**Antigravity**, **Codex**, and any CLI
 - **Push immediately**: Push your branch to GitHub immediately upon completing the task so teammates and independent reviewers (e.g. ChatGPT reviewer) can inspect the code.
 - **No unauthorized merge**: Never merge your own PR into `main` without review.
 
-## 5. Post-Challenge Instructions (Placeholder)
-<!-- This section will be populated once the hackathon topic and tech stack are announced. -->
-- Build commands: *TBD*
-- Test / Lint commands: *TBD*
-- Run / Dev server commands: *TBD*
+## 5. Project Commands (Django foundation, M0)
+- Install: `uv sync --frozen` (Python 3.12 via `uv`; copy `.env.example` to `.env` for local values)
+- Database: `uv run python manage.py migrate` then `uv run python manage.py seed_demo` (synthetic data, idempotent)
+- Test: `uv run pytest`; schema drift: `uv run python manage.py makemigrations --check --dry-run`
+- Run: `uv run python manage.py runserver`; health check at `/healthz/`; DEBUG-only template preview at `/_preview/adult/…` or `/_preview/child/…`
+- Shared schema (`apps/*/models.py`, migrations) and `config/` belong to the foundation owner until M1; propose changes in the PR thread (see `specs/001-reading-diary-mvp/tasks.md`).

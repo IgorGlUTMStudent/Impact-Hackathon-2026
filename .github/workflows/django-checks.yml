@@ -1,0 +1,28 @@
+name: Django checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  django:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up uv and Python 3.12
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Install locked dependencies
+        run: uv sync --frozen
+      - name: Django system check
+        run: uv run python manage.py check
+      - name: Confirm no migration drift
+        run: uv run python manage.py makemigrations --check --dry-run
+      - name: Run full test suite
+        run: uv run pytest

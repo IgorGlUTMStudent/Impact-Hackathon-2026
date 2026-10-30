@@ -124,7 +124,7 @@ specs/001-reading-diary-mvp/
     └── authorization.md # Actor × operation matrix, child mode, membership lifecycle
 ```
 
-`tasks.md` has **not yet been generated**. Architecture PR #8 passed independent review and the team lead approved G7; the team can now generate `tasks.md` from these contracts before starting separate workstreams.
+[`tasks.md`](./tasks.md) was written in the M0 foundation PR (Issue #10) from these contracts, after PR #8 review and G7 approval.
 
 ### Source Code (repository root) — to be created in M0, not in this PR
 

@@ -140,8 +140,8 @@ DB check constraint: exactly one of `account`, `child` is non-null and matches `
 | label | str | e.g. "Grupa 9–11, noiembrie" (no child names) |
 | expires_at | datetime | |
 | membership_days | int | default 90 `[ASSUMPTION — G3]` |
-| created_by | FK Account (staff) | |
-| redeemed_at, redeemed_for | datetime nullable, FK Reader nullable | single use: redemption sets both atomically (`UPDATE … WHERE redeemed_at IS NULL`) |
+| created_by | FK Account (staff), `PROTECT` | |
+| redeemed_at, redeemed_for | datetime nullable, FK Reader nullable, `SET_NULL` | single use: redemption sets both atomically (`UPDATE … WHERE redeemed_at IS NULL`). DB check: `redeemed_for` set ⇒ `redeemed_at` set. If the reader is later deleted, `redeemed_for` becomes NULL and the code stays used (M0 correction, PR for Issue #10) |
 
 ### `club.Achievement` (seeded definitions)
 
@@ -232,5 +232,6 @@ Visible only on the members-only page.
 - 1 staff account (`admin@demo.local`), 2 guardian accounts, children "Mia" (9–11) and "Alex" (7–8), 1 adult reader without children — all synthetic.
 - 12 books: public-domain Romanian children's classics (metadata only, generated covers), page counts set explicitly.
 - Achievements as above; 2 published club activities.
-- 3 unused membership codes printed to the console once (not committed).
+- No membership codes are seeded (M0 correction): codes are issued by staff through the PR-5 admin action, which shows the plaintext once. Nothing secret is ever printed by `seed_demo`.
+- `--reset` deletes only `@demo.local` accounts (cascading to their children, shelves, progress and grants) and refuses to run if any non-demo account exists.
 - Passwords/PINs for demo accounts come from environment variables, never committed.
