@@ -114,9 +114,31 @@ def test_database_url_switches_engine_without_sqlite_options(monkeypatch):
         importlib.reload(base)
 
 
-def test_evaluate_achievements_is_an_explicit_stub():
-    assert evaluate_achievements(reader=None) == []
-    assert "NOT IMPLEMENTED — PR-5" in evaluate_achievements.__doc__
+@pytest.mark.django_db
+def test_evaluate_achievements_grants_stored_progress_once():
+    from apps.accounts.models import Reader
+    from apps.club.models import Achievement, AchievementGrant
+    from apps.library.models import Book, ShelfEntry
+
+    account = Account.objects.create_user("achievement@demo.local", "synthetic-password")
+    reader = Reader.objects.create(kind=Reader.ADULT, account=account)
+    achievement = Achievement.objects.create(
+        code="pages-100", title="100 pagini", description="Synthetic",
+        rule=Achievement.PAGES_TOTAL_GTE, threshold=100, icon="pages",
+    )
+    book = Book.objects.create(
+        title="Synthetic", author="Synthetic", page_count=120, genre="story",
+        cover_color="#123456", cover_emoji="📘", source_note="test",
+    )
+    entry = ShelfEntry.objects.create(reader=reader, book=book, current_page=35)
+    assert evaluate_achievements(reader) == []
+    entry.current_page = 100
+    entry.save()
+    grants = evaluate_achievements(reader)
+    assert len(grants) == 1
+    assert grants[0].achievement == achievement and not grants[0].was_member
+    assert evaluate_achievements(reader) == []
+    assert AchievementGrant.objects.filter(reader=reader, achievement=achievement).count() == 1
 
 
 @pytest.mark.parametrize("current, total, expected", [(0, 120, 0), (35, 120, 29), (120, 120, 100), (5, 0, 0)])

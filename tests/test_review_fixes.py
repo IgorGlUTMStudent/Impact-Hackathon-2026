@@ -121,11 +121,20 @@ def test_readonly_admin_denies_delete_even_for_superuser(admin_client_superuser)
     request.user = Account.objects.get(email="boss@demo.local")
     assert request.user.is_superuser
 
-    for model in (ChildProfile, Reader, Throttle, ShelfEntry, ProgressEvent,
-                  ClubMembership, MembershipCode, AchievementGrant):
+    readonly = (ChildProfile, Reader, Throttle, ShelfEntry, ProgressEvent, AchievementGrant)
+    for model in readonly:
         model_admin = admin.site._registry[model]
         assert not model_admin.has_add_permission(request), model.__name__
         assert not model_admin.has_change_permission(request), model.__name__
+
+    # PR-5 deliberately permits controlled club issuance/activation, not editing.
+    for model in (ClubMembership, MembershipCode):
+        model_admin = admin.site._registry[model]
+        assert model_admin.has_add_permission(request), model.__name__
+        assert not model_admin.has_change_permission(request, model()), model.__name__
+
+    for model in (*readonly, ClubMembership, MembershipCode):
+        model_admin = admin.site._registry[model]
         assert not model_admin.has_delete_permission(request), model.__name__
         assert "delete_selected" not in model_admin.get_actions(request), model.__name__
 
