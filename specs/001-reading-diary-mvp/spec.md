@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-30
 
-**Status**: Draft — proposal for independent review ([Issue #7](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/issues/7)); not partner-approved
+**Status**: Architecture independently reviewed and stack accepted by the team (G7, 2026-10-30; PR #8). Feature requirements remain a **working MVP specification**, not partner-approved; G1–G6 remain open as marked.
 
 **Input**: User description: "Gustul Cartilor P0 vertical slice: reading diary with child and adult modes, guardian link, club membership entitlement and achievement"
 
@@ -236,7 +236,7 @@ Note on AI (Deferred, recorded for the roadmap): the safest position for a model
 | G4 | Reward semantics: what counts, what happens to earned club badges after revocation, existing club bonus system | Pages + finished books; earned badges kept; digital only | Gamification depth |
 | G5 | Social/leaderboard visibility and moderation for minors | None in P0 | Any P1 social feature |
 | G6 | Delivery: PWA acceptable? hosting owner? brand assets/mascot? book metadata and cover rights | PWA, generated covers, public metadata; no host is chosen until the host proof passes ([execution-plan.md](./execution-plan.md)) | Demo hosting, visuals |
-| G7 | Final stack sign-off by the team lead. "Everything in Python" is one teammate's input, not a confirmed team decision | Django 5.2 + HTMX is the **technically recommended** direction ([research.md](./research.md)), not yet a ratified team constraint | PR-1 (skeleton) merge |
+| G7 | **CLOSED 2026-10-30 — team lead approved** Django 5.2 LTS + HTMX 2.x + installable PWA after independent review (PR #8). This is an explicit project decision, *not* inferred from the earlier unconfirmed Python-only suggestion. | Architecture/stack is ratified for the hackathon MVP; any cross-cutting change needs a new decision gate. | **Unblocked**: PR-1 (foundation/schema) may proceed; normal review and tests still apply. |
 
 ## Assumptions
 

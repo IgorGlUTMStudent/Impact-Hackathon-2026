@@ -5,7 +5,7 @@ Universal guidance for AI coding agents (**Antigravity**, **Codex**, and any CLI
 ## 1. Primary Directives & Constitution
 - Strictly adhere to the team principles defined in [`.specify/memory/constitution.md`](.specify/memory/constitution.md).
 - Prioritize demo-first end-to-end value over premature optimization or non-essential refactoring.
-- Hackathon challenge, tech stack, and product architecture are currently **TBD**. Do not invent application logic, frameworks, or mock domain models until challenges are officially announced.
+- **Gustul Cărților (case #1) selected; G7 stack approved on 2026-10-30**: Django 5.2 LTS + HTMX 2.x + installable PWA, Python 3.12. Read `docs/adr/0001-architecture-gustul-cartilor-mvp.md` and `specs/001-reading-diary-mvp/` before implementation. This approves a technical direction, not every proposed partner feature: G1–G6 remain pending. Do not implement deferred features or change shared schema/contracts without a review gate.
 
 ## 2. Working with Code & Files
 - **Reconnaissance first**: Always inspect actual repository state (`git status --short`, file contents, existing contracts) before modifying code. Never assume files or dependencies exist.

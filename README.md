@@ -1,12 +1,12 @@
 # Impact Hackathon 2026
 
-Pre-challenge repository setup and collaborative workflow configuration using [GitHub Spec Kit](https://github.com/github/spec-kit).
+Gustul Cărților — Impact Hackathon 2026. Collaborative MVP implementation using [GitHub Spec Kit](https://github.com/github/spec-kit).
 
 > [!NOTE]
-> The hackathon track, product requirements, technology stack, and architecture are currently **TBD** (awaiting official challenge announcement). This repository contains only team collaboration rules, agent guidelines, and Spec Kit scaffolding.
+> **Project:** Gustul Cărților (case #1). **Team-approved technical stack, G7 (2026-10-30): Django 5.2 LTS + HTMX 2.x + responsive installable PWA (Python 3.12).** Architecture reviewed in [PR #8](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/pull/8). The partner has **not** signed off all business/safety requirements; G1–G6 remain tracked. Application implementation/test results are not implied by architecture approval.
 
-- **Issue tracking**: [Issue #1 — Pre-challenge setup](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/issues/1)
-- **Architecture proposal (under review, Issue #7)**: [`specs/001-reading-diary-mvp/`](specs/001-reading-diary-mvp/spec.md) · [ADR-0001](docs/adr/0001-architecture-gustul-cartilor-mvp.md)
+- **Architecture and execution**: [Issue #7](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/issues/7) · [Issue #4 — partner discovery](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/issues/4)
+- **Approved architecture (G7)**: [`specs/001-reading-diary-mvp/`](specs/001-reading-diary-mvp/spec.md) · [ADR-0001](docs/adr/0001-architecture-gustul-cartilor-mvp.md) · [execution plan](specs/001-reading-diary-mvp/execution-plan.md)
 - **Team Constitution**: [`.specify/memory/constitution.md`](.specify/memory/constitution.md)
 - **Agent Instructions**: [`AGENTS.md`](AGENTS.md) (universal / Antigravity / Codex) & [`CLAUDE.md`](CLAUDE.md) (Claude Code)
 
@@ -16,13 +16,13 @@ Pre-challenge repository setup and collaborative workflow configuration using [G
 
 | Team Member | AI Tool | Primary Role / Responsibility |
 |---|---|---|
-| **Владимир** | Antigravity | *TBD (post-announcement)* |
-| **Алиса** | Codex | *TBD (post-announcement)* |
-| **Арсений** | Claude Code | *TBD (post-announcement)* |
-| **Игорь** | Codex & Antigravity | *TBD (post-announcement)* |
-| **Денис** | Antigravity | *TBD (post-announcement)* |
+| **Владимир** | Antigravity | Adult UX, shared design system, Romanian i18n — proposed workstream |
+| **Алиса** | Codex | Book library, progress/stats domain and views — proposed workstream |
+| **Арсений** | Claude Code | Django foundation, schema, guardian identity/authorization — proposed workstream |
+| **Игорь** | Codex & Antigravity | Club entitlements, integration, host proof — proposed workstream |
+| **Денис** | Antigravity | Child UX, mascot, PWA shell — proposed workstream |
 
-*Note: Roles and component ownership will be assigned after challenge tracks are announced. Do not infer architectural specialization solely from the AI tool.*
+*These assignments follow the reviewed [execution plan](specs/001-reading-diary-mvp/execution-plan.md); they are proposed implementation ownership, not evidence that tasks have started. Shared schema and contracts require review.*
 
 ---
 

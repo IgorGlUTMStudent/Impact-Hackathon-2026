@@ -1,6 +1,6 @@
-# Execution plan after architecture review (proposal)
+# Execution plan after architecture review (G7 approved)
 
-**Not a task backlog.** This is the roadmap to start controlled parallel work once Issue #7 review approves the architecture. Detailed `tasks.md` is generated afterwards. Hackathon deadline is `[UNKNOWN]`; durations are estimates for AI-assisted developers.
+**Not a task backlog.** This roadmap follows the independent approval of PR #8 and **G7 team-lead stack ratification on 2026-10-30**. Detailed `tasks.md` is generated next. Hackathon deadline is `[UNKNOWN]`; durations are estimates for AI-assisted developers.
 
 ## Critical path
 
@@ -65,7 +65,7 @@ Assignment by dependency and by keeping shared files with one owner; the AI tool
 - Vladimir and Denis design screens (Figma/paper/HTML prototypes) from the [context contracts](./contracts/routes.md#template-context-contracts-for-parallel-ui-work) and the mascot script.
 - Alisa and Igor write their service functions and tests against [data-model.md](./data-model.md) in branches based on PR-1's branch (rebase after merge).
 - Igor runs the host proof (PR-0 notes in the PR description, no secrets).
-- The team lead gives G7 stack sign-off; PR-1 does not merge before it.
+- **G7 signed off by the team lead on 2026-10-30**. PR-1 can begin immediately; it must still pass actual model/seed checks and independent review before merge.
 
 ### Files nobody edits concurrently
 

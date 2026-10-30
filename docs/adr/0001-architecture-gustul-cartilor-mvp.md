@@ -1,8 +1,8 @@
 # ADR-0001: Architecture for the Gustul Cărților P0 MVP
 
-- **Status**: Proposed — awaiting independent review (Issue #7) and stack sign-off by the team lead (gate G7). Django is the technically recommended direction, not a ratified team constraint. Not partner-approved.
+- **Status**: **Accepted by the team for hackathon implementation** on 2026-10-30 (G7 closed following independent architecture review, PR #8). Partner validation of business rules and real-user privacy/consent gates remains pending.
 - **Date**: 2026-10-30
-- **Deciders**: team (proposal by Arsenii / Claude Code)
+- **Deciders**: Vladimir (team lead; final G7 approval), architecture proposal by Arsenii / Claude Code, independently reviewed in PR #8.
 - **Details**: [spec](../../specs/001-reading-diary-mvp/spec.md) · [plan](../../specs/001-reading-diary-mvp/plan.md) · [research](../../specs/001-reading-diary-mvp/research.md) · [data model](../../specs/001-reading-diary-mvp/data-model.md) · [routes](../../specs/001-reading-diary-mvp/contracts/routes.md) · [authorization](../../specs/001-reading-diary-mvp/contracts/authorization.md) · [execution plan](../../specs/001-reading-diary-mvp/execution-plan.md)
 
 ## Context
@@ -37,4 +37,4 @@ FastAPI + SQLAlchemy + Jinja/HTMX (more custom auth/admin code); Next.js + Supab
 
 ## Open decision gates
 
-G1 KPI · G2 child accounts/consent (Law 195/2024, unverified) · G3 membership verification · G4 reward semantics · G5 social/leaderboard for minors · G6 delivery/hosting/assets · G7 stack sign-off by team lead — see [spec](../../specs/001-reading-diary-mvp/spec.md#decision-gates-blocking-items-need-answers-before-freezing).
+G1 KPI · G2 child accounts/consent (Law 195/2024, unverified) · G3 membership verification · G4 reward semantics · G5 social/leaderboard for minors · G6 delivery/hosting/assets remain open. **G7 stack sign-off is CLOSED / ACCEPTED 2026-10-30**. See [spec](../../specs/001-reading-diary-mvp/spec.md#decision-gates-blocking-items-need-answers-before-freezing).
