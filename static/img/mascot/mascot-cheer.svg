@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%" role="img" aria-label="Mascot Cheer">
+  <!-- Stars & confetti around -->
+  <polygon points="20,25 23,31 29,32 24,36 26,42 20,38 14,42 16,36 11,32 17,31" fill="#FBBF24"/>
+  <polygon points="100,20 102,25 107,26 103,29 104,34 100,31 96,34 97,29 93,26 98,25" fill="#FBBF24"/>
+  <circle cx="28" cy="16" r="3" fill="#EC4899"/>
+  <circle cx="92" cy="44" r="3" fill="#10B981"/>
+  <rect x="15" y="55" width="4" height="7" rx="2" fill="#8B5CF6" transform="rotate(25 15 55)"/>
+  <rect x="102" y="60" width="4" height="7" rx="2" fill="#F97316" transform="rotate(-30 102 60)"/>
+  <!-- Body & tail -->
+  <path d="M40 95 Q30 100 20 95 Q10 90 22 80 Q32 75 42 82 Z" fill="#3B82F6"/>
+  <ellipse cx="60" cy="78" rx="30" ry="28" fill="#3B82F6"/>
+  <ellipse cx="60" cy="80" rx="20" ry="20" fill="#93C5FD"/>
+  <!-- Scales -->
+  <polygon points="56,18 64,18 60,10" fill="#F59E0B"/>
+  <polygon points="68,26 75,28 72,18" fill="#F59E0B"/>
+  <!-- Head -->
+  <circle cx="60" cy="42" r="26" fill="#3B82F6"/>
+  <!-- Snout -->
+  <ellipse cx="60" cy="48" rx="16" ry="12" fill="#60A5FA"/>
+  <circle cx="55" cy="44" r="2" fill="#1D4ED8"/>
+  <circle cx="65" cy="44" r="2" fill="#1D4ED8"/>
+  <!-- Big joyful open mouth -->
+  <path d="M50 48 Q60 62 70 48 Z" fill="#BE185D"/>
+  <path d="M54 53 Q60 59 66 53 Z" fill="#F472B6"/>
+  <!-- Cheeks -->
+  <circle cx="41" cy="46" r="4.5" fill="#F472B6" opacity="0.7"/>
+  <circle cx="79" cy="46" r="4.5" fill="#F472B6" opacity="0.7"/>
+  <!-- Happy curved eyes -->
+  <path d="M46 36 Q50 30 54 36" stroke="#1E3A8A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M66 36 Q70 30 74 36" stroke="#1E3A8A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <!-- Paws up in the air! -->
+  <path d="M36 75 Q24 60 28 50" stroke="#3B82F6" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <circle cx="28" cy="50" r="5" fill="#2563EB"/>
+  <path d="M84 75 Q96 60 92 50" stroke="#3B82F6" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <circle cx="92" cy="50" r="5" fill="#2563EB"/>
+  <!-- Feet -->
+  <ellipse cx="45" cy="104" rx="8" ry="5" fill="#2563EB"/>
+  <ellipse cx="75" cy="104" rx="8" ry="5" fill="#2563EB"/>
+</svg>
+

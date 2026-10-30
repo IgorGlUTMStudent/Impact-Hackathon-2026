@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%" role="img" aria-label="Mascot Think">
+  <!-- Thought sparkle / bubble -->
+  <polygon points="98,18 100,23 105,25 100,27 98,32 96,27 91,25 96,23" fill="#60A5FA"/>
+  <circle cx="88" cy="30" r="3" fill="#93C5FD"/>
+  <circle cx="82" cy="36" r="2" fill="#BFDBFE"/>
+  <!-- Body & tail -->
+  <path d="M40 95 Q30 100 20 95 Q10 90 22 80 Q32 75 42 82 Z" fill="#3B82F6"/>
+  <ellipse cx="60" cy="78" rx="30" ry="28" fill="#3B82F6"/>
+  <ellipse cx="60" cy="80" rx="20" ry="20" fill="#93C5FD"/>
+  <!-- Scales -->
+  <polygon points="56,18 64,18 60,10" fill="#F59E0B"/>
+  <polygon points="68,26 75,28 72,18" fill="#F59E0B"/>
+  <!-- Head -->
+  <circle cx="60" cy="42" r="26" fill="#3B82F6"/>
+  <!-- Snout -->
+  <ellipse cx="60" cy="48" rx="16" ry="12" fill="#60A5FA"/>
+  <circle cx="55" cy="44" r="2" fill="#1D4ED8"/>
+  <circle cx="65" cy="44" r="2" fill="#1D4ED8"/>
+  <!-- Pensive cute mouth -->
+  <ellipse cx="63" cy="51" rx="3" ry="2" fill="#1E3A8A"/>
+  <!-- Cheeks -->
+  <circle cx="43" cy="48" r="4" fill="#F472B6" opacity="0.5"/>
+  <circle cx="77" cy="48" r="4" fill="#F472B6" opacity="0.5"/>
+  <!-- Eyes looking up/right -->
+  <circle cx="49" cy="38" r="4.5" fill="#FFFFFF"/>
+  <circle cx="51" cy="36" r="2.5" fill="#1E3A8A"/>
+  <circle cx="69" cy="38" r="4.5" fill="#FFFFFF"/>
+  <circle cx="71" cy="36" r="2.5" fill="#1E3A8A"/>
+  <!-- Hand on chin -->
+  <path d="M72 75 Q80 62 70 54" stroke="#3B82F6" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <circle cx="68" cy="53" r="5" fill="#2563EB"/>
+  <!-- Other hand on book -->
+  <rect x="36" y="80" width="22" height="15" rx="3" fill="#F59E0B" transform="rotate(-15 36 80)"/>
+  <circle cx="46" cy="84" r="5" fill="#2563EB"/>
+  <!-- Feet -->
+  <ellipse cx="45" cy="104" rx="8" ry="5" fill="#2563EB"/>
+  <ellipse cx="75" cy="104" rx="8" ry="5" fill="#2563EB"/>
+</svg>
+
