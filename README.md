@@ -6,6 +6,7 @@ Pre-challenge repository setup and collaborative workflow configuration using [G
 > The hackathon track, product requirements, technology stack, and architecture are currently **TBD** (awaiting official challenge announcement). This repository contains only team collaboration rules, agent guidelines, and Spec Kit scaffolding.
 
 - **Issue tracking**: [Issue #1 — Pre-challenge setup](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/issues/1)
+- **Architecture proposal (under review, Issue #7)**: [`specs/001-reading-diary-mvp/`](specs/001-reading-diary-mvp/spec.md) · [ADR-0001](docs/adr/0001-architecture-gustul-cartilor-mvp.md)
 - **Team Constitution**: [`.specify/memory/constitution.md`](.specify/memory/constitution.md)
 - **Agent Instructions**: [`AGENTS.md`](AGENTS.md) (universal / Antigravity / Codex) & [`CLAUDE.md`](CLAUDE.md) (Claude Code)
 
