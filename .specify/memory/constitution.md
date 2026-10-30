@@ -1,50 +1,35 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Impact Hackathon 2026 Team Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Demo-First & End-to-End MVP
+The primary objective of the hackathon is delivering a working, end-to-end user journey ready for live demonstration. Features that cannot be reached or experienced in the demo have zero score value. Priority is always given to the vertical slice over isolated horizontal layers.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Time-Boxing & Critical-Path Focus
+Every task must be evaluated against Impact, Effort, and Risk before starting work. Critical-path blockers take absolute priority. Avoid premature optimization, exhaustive refactoring, or polishing non-critical elements before the core demo flow is demonstrably working.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Shared Contracts & Explicit Decision Gates
+Shared interfaces, API specifications, database schemas, and shared data models must have a single source of truth in the repository. Any change to a shared contract represents an explicit decision gate: it must be agreed upon by affected team members before code implementation begins.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Parallel Work & Conflict Avoidance
+Team members work in isolated feature branches with small, focused Pull Requests. Clear file ownership and module boundaries prevent overlapping edits. Independent modules proceed concurrently; shared core code is integrated incrementally in small batches.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Verifiability & Honest Smoke Checks
+Code must be verifiable. Every Pull Request must report concrete, executable checks (smoke tests, manual reproduction steps, or automated tests for critical paths). Never report fictional or unverified "PASS" results; document real command outputs and known edge-case limitations.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### VI. Fact-Based Reasoning & Handling Uncertainty
+Hackathon requirements, jury criteria, domain constraints, and technical stack details are accepted as facts only once officially announced by organizers. Assumptions must be explicitly flagged as `[ASSUMPTION]`. Architectural decisions and technology selections remain deferred until the challenge specifications are published.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### VII. Pragmatic Spec-Driven Development (SDD)
+Spec Kit is an alignment and acceleration tool, not a bureaucratic ritual. Full specification cycles (`specify -> clarify -> plan -> tasks -> implement`) are reserved for non-trivial features and complex modules. Urgent hotfixes and trivial adjustments within tight timeboxes do not require heavy documentation ceremonies.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### VIII. Security & Compliance
+Never commit secrets, API keys, credentials, or personal identifiable data (PII). Respect all hackathon rules, environment boundaries, and organizer terms. Sanctioned paths and documented tooling must be used at all times.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Governance & Amendment Policy
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+1. **Supremacy**: This Constitution defines the team's operational and development baseline for Impact Hackathon 2026.
+2. **Amendments**: Amendments require consensus among active team members. Any modification must update the version number and last-amended date below, along with a concise justification in the accompanying Pull Request.
+3. **Challenge Ingestion**: Upon official release of hackathon tracks and constraints, the team will review this constitution to adopt any track-specific technical requirements without violating core principles.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-10-30 | **Last Amended**: 2026-10-30
