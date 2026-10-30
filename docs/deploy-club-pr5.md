@@ -1,5 +1,8 @@
 # PR-5 progress and integration gate (2026-10-30)
 
+Historical staged-PR report. The subsequent real PR-26 integration and current
+limitations are documented in [deploy-club-integration.md](deploy-club-integration.md).
+
 Refs #16; real redemption integration is tracked by **Issue #23**, dependent
 on #14 / PR-2. This is a staged club-domain implementation, not deployment
 evidence or a completed production redemption flow. Club primitives can be

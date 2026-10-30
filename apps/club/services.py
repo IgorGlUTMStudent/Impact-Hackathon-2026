@@ -7,15 +7,15 @@ from datetime import timedelta
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.db.models import Count, Q, Sum
+from django.http import Http404
 from django.utils import timezone
+from django.views.decorators.debug import sensitive_variables
 
 from apps.library.models import ShelfEntry
+from apps.accounts import throttle
+from apps.accounts.models import Account, Reader, Throttle
 
 from .models import Achievement, AchievementGrant, ClubMembership, MembershipCode
-
-
-class IntegrationPending(RuntimeError):
-    """No reviewed PR-2 adapter has been installed; redemption fails closed."""
 
 
 class InvalidCode(ValidationError):
@@ -72,26 +72,32 @@ def revoke_membership(actor, membership):
     )
 
 
-def redeem_code(actor, reader, raw_code, *, _integration=None):
-    """Isolated PR-5 boundary, NOT the proposed accounts API.
+@sensitive_variables("raw_code")
+def redeem_code(actor, reader, raw_code):
+    """Redeem for self/own child. HTTP middleware enforces adult session mode.
 
-    A reviewed adapter must authorize adult mode/target ownership, and expose
-    check(actor), record_failure(actor), reset(actor), raising on throttle lock.
-    No adapter is shipped until PR-2 semantics are agreed. Test doubles exercise
-    this boundary only and are not a production security implementation.
-
-    Must be called outside an enclosing transaction: rejection is raised AFTER
-    the failed-attempt transaction commits. Success consumes code, membership,
-    grants and throttle reset together. Adapter check must serialize its account.
+    Invalid attempts are counted AFTER the redemption transaction ends, because
+    PR-26 record_failure opens its own durable transaction. An enclosing caller
+    transaction is forbidden. There is a residual race between check and that
+    independent failure commit; this service does not promise strict concurrent
+    throttling. Code consumption and grants remain atomic and single-use.
     """
-    if _integration is None:
-        raise IntegrationPending("PR-2 authz/throttle adapter pending review")
     if transaction.get_connection().in_atomic_block:
         raise RuntimeError("Redemption requires an outermost transaction")
-    _integration.authorize(actor, reader)
+    if not actor.is_authenticated or not actor.is_active:
+        raise PermissionDenied
+    key = str(actor.pk)
     membership = None
     with transaction.atomic(durable=True):
-        _integration.check(actor)
+        Account.objects.select_for_update().get(pk=actor.pk)
+        owned = Reader.objects.filter(pk=reader.pk).filter(
+            Q(kind=Reader.ADULT, account_id=actor.pk) |
+            Q(kind=Reader.CHILD, child__guardian_id=actor.pk)
+        ).first()
+        if owned is None:
+            raise Http404
+        reader = owned
+        throttle.check(Throttle.REDEEM, key)
         now = timezone.now()
         code = MembershipCode.objects.filter(
             code_hash=code_digest(raw_code), redeemed_at__isnull=True, expires_at__gt=now,
@@ -99,16 +105,15 @@ def redeem_code(actor, reader, raw_code, *, _integration=None):
         won = code is not None and MembershipCode.objects.filter(
             pk=code.pk, redeemed_at__isnull=True, expires_at__gt=now,
         ).update(redeemed_at=now, redeemed_for=reader)
-        if not won:
-            _integration.record_failure(actor)
-        else:
+        if won:
             membership = ClubMembership.objects.create(
                 reader=reader, source=ClubMembership.CODE, code=code,
                 valid_from=now, valid_until=now + timedelta(days=code.membership_days),
             )
             evaluate_achievements(reader)
-            _integration.reset(actor)
+            throttle.reset(Throttle.REDEEM, key)
     if membership is None:
+        throttle.record_failure(Throttle.REDEEM, key)
         raise InvalidCode()
     return membership
 
