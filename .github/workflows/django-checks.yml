@@ -19,7 +19,9 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - name: Install locked dependencies
-        run: uv sync --frozen
+        # --extra postgres mirrors the production build (render.yaml): the WSGI prod-start regression
+        # test instantiates the full app on a PostgreSQL engine, which needs the psycopg driver.
+        run: uv sync --frozen --extra postgres
       - name: Django system check
         run: uv run python manage.py check
       - name: Confirm no migration drift

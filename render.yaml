@@ -1,0 +1,46 @@
+# Render blueprint for the real Gustul Cărților product (issue #34).
+# Provisioning is a decision gate owned by Vladimir (Render operator): the current workspace already
+# holds its single free PostgreSQL (host-proof probe), so see docs/demo-deployment.md BEFORE creating
+# anything. This file describes the target state; it does not prove a live deployment.
+services:
+  - type: web
+    name: gustul-cartilor
+    runtime: python
+    region: frankfurt
+    plan: free
+    branch: main
+    autoDeployTrigger: commit
+    healthCheckPath: /healthz/
+    # Stages are kept separate: collectstatic belongs to the build; migrate runs right before the
+    # server (safe for one instance; no seed_demo and no --reset anywhere); gunicorn is the runtime.
+    buildCommand: uv sync --frozen --extra postgres --no-dev && uv run --no-sync python manage.py collectstatic --noinput
+    startCommand: uv run --no-sync python manage.py migrate --noinput && uv run --no-sync gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 2 --timeout 60
+    envVars:
+      # uv provisions Python 3.12 from .python-version / uv.lock regardless of the image default.
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      # sync: false → the Render UI asks for the exact values at blueprint creation:
+      #   DJANGO_ALLOWED_HOSTS: the public hostname, e.g. gustul-cartilor.onrender.com
+      #   DJANGO_CSRF_TRUSTED_ORIGINS: the matching https origin, e.g. https://gustul-cartilor.onrender.com
+      # (config/settings/prod.py also appends Render's own RENDER_EXTERNAL_HOSTNAME/URL as a fallback.)
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gustul-cartilor-db
+          property: connectionString
+
+databases:
+  - name: gustul-cartilor-db
+    databaseName: gustul_cartilor
+    region: frankfurt
+    plan: free
+    # Deny-by-default (blueprint spec): an empty list refuses all external connection attempts; the only
+    # client is the web service itself via Render's internal DATABASE_URL (same region). A temporary
+    # operator-IP entry for the one-time seed is made in the Render dashboard and removed afterwards
+    # (docs/demo-deployment.md §7).
+    ipAllowList: []

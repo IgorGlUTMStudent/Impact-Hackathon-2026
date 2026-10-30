@@ -2,7 +2,12 @@ import os
 
 from django.core.exceptions import ImproperlyConfigured
 
-from .base import *  # noqa: F403
+# Fail closed before base settings load: base.py falls back to local SQLite, and an unset or
+# empty-but-present DATABASE_URL would surface as a confusing KeyError instead of this message.
+if not os.environ.get("DATABASE_URL", "").strip():
+    raise ImproperlyConfigured("Set DATABASE_URL to a persistent PostgreSQL in production.")
+
+from .base import *  # noqa: E402,F403
 
 DEBUG = False
 
@@ -12,6 +17,18 @@ if not SECRET_KEY or SECRET_KEY == "change-me":
 
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS")  # noqa: F405
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")  # noqa: F405
+
+# An explicit sqlite:// URL is refused too: the host disk is ephemeral, the demo DB must be PostgreSQL.
+if DATABASES["default"]["ENGINE"].startswith("django.db.backends.sqlite3"):
+    raise ImproperlyConfigured("Refusing a SQLite DATABASE_URL in production; the host disk is ephemeral.")
+
+# Render auto-sets these on its runtime; the service then works without hand-copied hostnames.
+render_host = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "")
+if render_host:
+    ALLOWED_HOSTS.append(render_host)
+render_url = os.environ.get("RENDER_EXTERNAL_URL", "")
+if render_url:
+    CSRF_TRUSTED_ORIGINS.append(render_url)
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

@@ -34,14 +34,21 @@ def run_wsgi_probe(**env_overrides):
 
 
 def test_wsgi_without_settings_module_fails_closed_without_secret():
-    result = run_wsgi_probe()
+    # Issue #34: prod now also requires DATABASE_URL, so the probe carries a synthetic PostgreSQL URL and
+    # the missing-variable guard under test stays the DJANGO_SECRET_KEY one.
+    result = run_wsgi_probe(DATABASE_URL="postgres://u:p@localhost:5432/gustul")
     assert result.returncode != 0
     assert "ImproperlyConfigured" in result.stderr and "DJANGO_SECRET_KEY" in result.stderr
     assert '"debug": true' not in result.stdout  # never fell back to dev
 
 
 def test_wsgi_without_settings_module_starts_with_prod():
-    result = run_wsgi_probe(DJANGO_SECRET_KEY="synthetic-test-key-" + "x" * 40, DJANGO_ALLOWED_HOSTS="demo.example.org")
+    result = run_wsgi_probe(
+        DJANGO_SECRET_KEY="synthetic-test-key-" + "x" * 40,
+        DJANGO_ALLOWED_HOSTS="demo.example.org",
+        # A prod start now means a PostgreSQL engine; needs the driver from the postgres extra (CI parity).
+        DATABASE_URL="postgres://u:p@localhost:5432/gustul",
+    )
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout) == {
         "module": "config.settings.prod", "debug": False, "session_secure": True, "csrf_secure": True,

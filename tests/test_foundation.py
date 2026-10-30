@@ -87,18 +87,27 @@ def test_preview_route_absent_when_built_with_debug_off(urlconf_built_with_debug
 def test_prod_settings_are_safe(monkeypatch):
     monkeypatch.setenv("DJANGO_SECRET_KEY", "test-only-" + "k" * 40)
     monkeypatch.setenv("DJANGO_ALLOWED_HOSTS", "demo.example.org")
-    prod = importlib.import_module("config.settings.prod")
-    prod = importlib.reload(prod)
-    assert prod.DEBUG is False
-    assert prod.SESSION_COOKIE_SECURE and prod.CSRF_COOKIE_SECURE
-    assert prod.ALLOWED_HOSTS == ["demo.example.org"]
-    assert prod.DATABASES["default"]["OPTIONS"]["transaction_mode"] == "IMMEDIATE"
+    # Issue #34: prod requires a persistent PostgreSQL and must never fall back to SQLite.
+    monkeypatch.setenv("DATABASE_URL", "postgres://u:p@localhost:5432/gustul")
+    base = importlib.reload(importlib.import_module("config.settings.base"))
+    prod = importlib.reload(importlib.import_module("config.settings.prod"))
+    try:
+        assert prod.DEBUG is False
+        assert prod.SESSION_COOKIE_SECURE and prod.CSRF_COOKIE_SECURE
+        assert prod.ALLOWED_HOSTS == ["demo.example.org"]
+        assert prod.DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql"
+        assert "transaction_mode" not in prod.DATABASES["default"]
+    finally:
+        monkeypatch.delenv("DATABASE_URL")
+        importlib.reload(base)
 
 
 def test_prod_settings_require_secret_key(monkeypatch):
     from django.core.exceptions import ImproperlyConfigured
 
     monkeypatch.setenv("DJANGO_SECRET_KEY", "")
+    # Keep DATABASE_URL valid so the raised error is the secret-key guard, not the new database guard.
+    monkeypatch.setenv("DATABASE_URL", "postgres://u:p@localhost:5432/gustul")
     with pytest.raises(ImproperlyConfigured):
         importlib.reload(importlib.import_module("config.settings.prod"))
 
