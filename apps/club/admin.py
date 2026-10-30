@@ -51,6 +51,12 @@ class CodeForm(forms.ModelForm):
             raise forms.ValidationError("Data trebuie să fie în viitor.")
         return value
 
+    def clean_membership_days(self):
+        value = self.cleaned_data["membership_days"]
+        if value < 1:
+            raise forms.ValidationError("Durata abonamentului trebuie să fie de cel puțin o zi.")
+        return value
+
 
 @admin.register(MembershipCode)
 class MembershipCodeAdmin(admin.ModelAdmin):

@@ -1,7 +1,9 @@
 # PR-5 progress and integration gate (2026-10-30)
 
-Refs #16; dependency: #14 / PR-2. This is a reviewable partial implementation,
-not deployment evidence or a completed production redemption flow.
+Refs #16; real redemption integration is tracked by **Issue #23**, dependent
+on #14 / PR-2. This is a staged club-domain implementation, not deployment
+evidence or a completed production redemption flow. Club primitives can be
+reviewed separately; the product redeem flow remains blocked by #23.
 
 Implemented: database membership boundaries; secure hashed code issuance;
 staff activation/revocation; conditional single-use consumption with membership
@@ -27,24 +29,42 @@ Real authz/child-mode/IDOR/lock-expiry tests remain NOT RUN pending PR-2.
 
 ## Actual verification
 
-Local Python 3.12.16 provisioned with uv; `uv sync --frozen` succeeded.
+Local Python 3.12.16 provisioned with uv; `uv sync --frozen` succeeded
+(14 packages checked).
 Commands used the local `.tools/uv.exe` executable (not committed).
 
 - `git diff --check`: PASS.
 - `uv run python manage.py check`: no issues (0 silenced).
 - `uv run python manage.py makemigrations --check --dry-run`: no changes detected.
-- `uv run pytest tests/test_membership.py tests/test_achievements.py tests/test_club_redemption.py`:
-  **11 passed in 5.50s**, including admin POST and subsequent no-plaintext GET.
-- Full `uv run pytest` before the final two admin/service tests were added:
-  **58 passed, 6 failed in 39.21s**. Two M0 assertions still require the explicit
-  achievement stub and no club-admin additions; owner coordination is needed to
-  retire those assertions. Four subprocess tests fail on Windows with WinError
-  10106 while importing `_overlapped` under their minimal environment. These
-  files were left unchanged because they are outside Igor's assigned scope.
+- `uv run pytest tests/test_review_fixes.py tests/test_foundation.py tests/test_membership.py tests/test_achievements.py tests/test_club_redemption.py -q`:
+  **34 passed, 4 failed** (38 collected, verified separately). The four failures
+  are unchanged subprocess tests with Windows WinError 10106 importing
+  `_overlapped` under a minimal environment. No skips or xfails were added.
+- Full local `uv run pytest`: **66 passed, 4 failed in 61.71s**. The same four
+  unchanged Windows subprocess failures remain; both prior Linux CI failures
+  and all new form/permissions/deletion tests pass locally.
+- Ubuntu CI for this fix: pending push; final run URL/result will be attached
+  to PR #20. No Linux PASS is claimed before the actual workflow completes.
+
+## Review fixes (2026-10-30)
+
+Only the two obsolete M0 assertions were updated, as requested by independent
+review: strict read-only models retain add/change/delete denial, all protected
+models retain no-delete/no-bulk-delete checks, while club creation is permitted
+under model permissions. The old achievement-stub test now uses a real reader,
+100 stored pages and achievement definition, verifying one grant and no replay
+duplicates. Arsenii was notified in Issue #14.
+
+CodeForm now rejects membership_days=0 before code generation or database writes;
+admin client tests cover 0 and 1, staff with/without permissions, direct delete
+GET/POST, forged bulk delete, existing-record edit denial and dependent-record
+preservation. One-time plaintext and privacy response headers remain covered.
+No models, migrations, config, dependencies or accounts modules changed.
 
 Concurrent SQLite shared-memory test confirms exactly one membership; loser may
 receive SQLITE_LOCKED rather than invalid-code (future view must map DB lock to
 503). File-backed SQLite/PostgreSQL concurrent-client rehearsal: NOT RUN.
 Actual public app deployment, mobile tests and PR-6 e2e: NOT RUN.
 
-Do not merge until independent review and PR-2 integration resolve these gates.
+Do not self-merge. Independent review and green CI are required for the staged
+club primitives; real redemption remains unavailable until Issue #23 is resolved.
