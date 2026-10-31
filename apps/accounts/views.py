@@ -246,7 +246,9 @@ def pin_gate(request):
         throttle.check(Throttle.PIN, key)
     except throttle.Locked as locked:
         return _locked(request, template, {"form": PinGateForm()}, locked)
-    if form.is_valid() and check_password(form.cleaned_data["pin"], request.user.pin_hash):
+    # Fail closed when the hash is missing (abnormal out-of-band state, #40): count the failure
+    # instead of calling check_password with None, which would 500. Never unlocks adult mode.
+    if form.is_valid() and request.user.pin_hash and check_password(form.cleaned_data["pin"], request.user.pin_hash):
         throttle.reset(Throttle.PIN, key)
         request.session.pop(MODE_KEY, None)
         request.session.pop(ACTIVE_CHILD_KEY, None)
