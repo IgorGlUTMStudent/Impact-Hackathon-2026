@@ -25,8 +25,10 @@
   <div class="child-app">
     <header class="child-header">
       <a href="/copil/" class="child-profile-badge" aria-label="Acasă - pagina copilului">
+        <!-- Strict avatar allowlist with complete file names: the static tag must never receive a
+             partial path — the production manifest storage only resolves full entries (#56). -->
         {% if child.avatar %}
-          <img src="{% static 'img/avatars/' %}{{ child.avatar }}.svg" alt="{{ child.nickname }}" class="child-avatar-img" width="48" height="48">
+          <img src="{% if child.avatar == 'fox' %}{% static 'img/avatars/fox.svg' %}{% elif child.avatar == 'owl' %}{% static 'img/avatars/owl.svg' %}{% elif child.avatar == 'cat' %}{% static 'img/avatars/cat.svg' %}{% elif child.avatar == 'bear' %}{% static 'img/avatars/bear.svg' %}{% elif child.avatar == 'rabbit' %}{% static 'img/avatars/rabbit.svg' %}{% elif child.avatar == 'hedgehog' %}{% static 'img/avatars/hedgehog.svg' %}{% elif child.avatar == 'squirrel' %}{% static 'img/avatars/squirrel.svg' %}{% elif child.avatar == 'turtle' %}{% static 'img/avatars/turtle.svg' %}{% else %}{% static 'img/avatars/fox.svg' %}{% endif %}" alt="{{ child.nickname }}" class="child-avatar-img" width="48" height="48">
         {% else %}
           <img src="{% static 'img/avatars/fox.svg' %}" alt="Avatar" class="child-avatar-img" width="48" height="48">
         {% endif %}

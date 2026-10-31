@@ -6,7 +6,9 @@
 {% block content %}
   <!-- Mascot Welcome / Reaction -->
   <section class="mascot-container" aria-label="Mesaj de la Gusti">
-    <img src="{% static 'img/mascot/mascot-' %}{{ mascot.mood|default:'happy' }}.svg" alt="Mascot" class="mascot-avatar" width="72" height="72">
+    <!-- The view always renders the "welcome" script (mood happy); the static tag must receive a
+         complete path — the production manifest storage raises on partial names (#56). -->
+    <img src="{% static 'img/mascot/mascot-happy.svg' %}" alt="Mascot" class="mascot-avatar" width="72" height="72">
     <div class="mascot-bubble">
       <p class="mascot-text">{{ mascot.text|default:"Salut! Hai să citim ceva frumos!" }}</p>
     </div>

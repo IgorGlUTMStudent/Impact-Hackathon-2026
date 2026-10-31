@@ -3,7 +3,9 @@
   <!-- Mascot line for progress/errors -->
   {% if mascot %}
     <section class="mascot-container" aria-label="Gusti zice">
-      <img src="{% static 'img/mascot/mascot-' %}{{ mascot.mood|default:'happy' }}.svg" alt="Mascot" class="mascot-avatar" width="72" height="72">
+      <!-- Strict mood allowlist with complete file names: the static tag must never receive a
+           partial path — the production manifest storage raises on partial names (#56). -->
+      <img src="{% if mascot.mood == 'cheer' %}{% static 'img/mascot/mascot-cheer.svg' %}{% elif mascot.mood == 'think' %}{% static 'img/mascot/mascot-think.svg' %}{% elif mascot.mood == 'oops' %}{% static 'img/mascot/mascot-oops.svg' %}{% else %}{% static 'img/mascot/mascot-happy.svg' %}{% endif %}" alt="Mascot" class="mascot-avatar" width="72" height="72">
       <div class="mascot-bubble">
         <p class="mascot-text">{{ mascot.text }}</p>
       </div>
