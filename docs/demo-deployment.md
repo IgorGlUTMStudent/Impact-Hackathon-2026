@@ -294,3 +294,11 @@ migrations, public URLs or authz/club contracts changed.
 - **ChatGPT project brain:** independent review of this PR, especially §12.
 - The PR stays open with `Refs #34` (not `Closes`); no self-merge; the product service switches to `main`
   only after this PR is merged and CI is green, with Владимир's final coordination.
+
+## 14. Cross-reference: synthetic persistence proof (#43, 2026-10-31)
+
+Issue #43 was revised to a **synthetic-only** scope: `scripts/synthetic_persistence_check.py`
+proves the real Django routes persist `35/120` into a disposable file-backed SQLite database
+across a writer→reader process boundary (evidence: `docs/qa/issue-43-synthetic-persistence.md`).
+This adds no evidence to the #34 ledger: live Render restart/redeploy persistence on the real
+PostgreSQL host remains **NOT VERIFIED** until the §9 ledger is filled.
