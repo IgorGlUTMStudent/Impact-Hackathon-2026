@@ -12,6 +12,12 @@ from .viewmodels import AchievementVM, BookVM, ChildVM, GrantVM, MascotLine, She
 
 
 @require_GET
+def home(request):
+    """Public landing (routes.md #1, mode pub). Not in CHILD_ALLOWED: child mode is denied by the middleware."""
+    return render(request, "adult/landing.html")
+
+
+@require_GET
 def healthz(request):
     """Liveness + DB reachability. Reveals nothing about users or children."""
     try:
