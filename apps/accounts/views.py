@@ -10,6 +10,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.views import LoginView
 from django.db import transaction
 from django.shortcuts import redirect, render
+from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from apps.club.services import is_member
@@ -92,6 +93,7 @@ def _entry_vm(entry):
     )
 
 
+@never_cache
 @login_required
 @require_GET
 def adult_dashboard(request):
@@ -118,6 +120,7 @@ def adult_dashboard(request):
     })
 
 
+@never_cache
 @login_required
 @require_GET
 def child_report(request, child):
@@ -152,6 +155,7 @@ def _family_context(request, **extra):
     }
 
 
+@never_cache
 @login_required
 @require_http_methods(["GET", "POST"])
 def family(request):
@@ -174,6 +178,7 @@ def family(request):
     return render(request, _templates("family"), _family_context(request, form=form), status=422)
 
 
+@never_cache
 @login_required
 @require_POST
 def child_rename(request, child):
@@ -189,6 +194,7 @@ def child_rename(request, child):
     return render(request, _templates("family"), context, status=422)
 
 
+@never_cache
 @login_required
 @require_POST
 def child_delete(request, child):
@@ -199,6 +205,7 @@ def child_delete(request, child):
     return redirect("family")
 
 
+@never_cache
 @login_required
 @require_http_methods(["GET", "POST"])
 def pin_set(request):

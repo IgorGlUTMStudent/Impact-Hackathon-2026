@@ -11,6 +11,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_GET, require_POST
 
@@ -102,6 +103,7 @@ def book_detail(request, reader, book):
     return render(request, f"{_mode(request)}/book_detail.html", context)
 
 
+@never_cache
 @require_GET
 @_with_reader()
 def my_shelf(request, reader):
@@ -134,6 +136,7 @@ def _progress_context(request, entry, *, request_id=None, new_grants=(), errors=
     return context
 
 
+@never_cache
 @require_GET
 @_with_reader()
 def shelf_entry(request, reader, entry):
@@ -197,6 +200,7 @@ def _write_progress(request, reader, public_id, *, finish):
     return _saved_response(request, result)
 
 
+@never_cache
 @require_POST
 @csrf_protect
 @_with_reader()
@@ -204,6 +208,7 @@ def record_progress(request, reader, entry):
     return _write_progress(request, reader, entry, finish=False)
 
 
+@never_cache
 @require_POST
 @csrf_protect
 @_with_reader()
