@@ -10,6 +10,8 @@ description: "Task list for the Gustul Cărților P0 reading-diary slice"
 
 **Status rule**: `[x]` only for work merged or in an open PR **with executed checks reported in that PR**. Everything else is `[ ]`. Planned tests are NOT RUN until their PR reports real output.
 
+> **Status update 2026-10-31 (against `main@3f2bb62`, CI [374 passed, 4 skipped, 0 failed](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/actions/runs/41153120922)):** the M1–M3 implementation tasks below are merged (actual PRs: M1 accounts #26, library services #19, club services #20, library views #21, club views #31, adult UI #22, child UX #29, E2E #37). Implementation checkboxes are now marked accordingly. T013/T020 stay unchecked (review/host-proof acceptance not evidenced here); T070–T072 stay **NOT RUN** — manual demo, device and security-counterexample checks are tracked in [`docs/demo/acceptance-ledger.md`](../../docs/demo/acceptance-ledger.md).
+
 ## Format: `[ID] [P?] [Story] Description — owner (PR)`
 
 - **[P]**: can run in parallel (different files, no unmet dependency)
@@ -60,35 +62,35 @@ Shared files with a single owner: see [execution-plan.md § Files nobody edits c
 
 ### Identity, child mode, throttles (Arsenii, PR-2)
 
-- [ ] T030 `accounts/throttle.py` (`check`, `record_failure`, `reset`) over `accounts.Throttle` — Arsenii
-- [ ] T031 [US4] Signup (`/cont/inregistrare/`), `ThrottledLoginView`, POST `logout`; adult `Reader` created with the account — Arsenii
-- [ ] T032 [US1] Family CRUD (`/familie/`), 6-child limit, child `Reader` created with the child — Arsenii
-- [ ] T033 [US3] PIN set (`/familie/pin/`, password re-auth), `child_mode_start`, `pin_gate` (PIN only, 5 → 5 min), logout recovery — Arsenii
-- [ ] T034 [US3] `ChildModeMiddleware` deny-by-default + HTMX 401/403 guard; `accounts/authz.py` (`current_reader`, `get_child_for_guardian`, `get_entry_for_reader`) — Arsenii
-- [ ] T035 Tests: `test_authz.py`, `test_child_mode.py`, `test_login_throttle.py` — Arsenii
+- [x] T030 `accounts/throttle.py` (`check`, `record_failure`, `reset`) over `accounts.Throttle` — Arsenii
+- [x] T031 [US4] Signup (`/cont/inregistrare/`), `ThrottledLoginView`, POST `logout`; adult `Reader` created with the account — Arsenii
+- [x] T032 [US1] Family CRUD (`/familie/`), 6-child limit, child `Reader` created with the child — Arsenii
+- [x] T033 [US3] PIN set (`/familie/pin/`, password re-auth), `child_mode_start`, `pin_gate` (PIN only, 5 → 5 min), logout recovery — Arsenii
+- [x] T034 [US3] `ChildModeMiddleware` deny-by-default + HTMX 401/403 guard; `accounts/authz.py` (`current_reader`, `get_child_for_guardian`, `get_entry_for_reader`) — Arsenii
+- [x] T035 Tests: `test_authz.py`, `test_child_mode.py`, `test_login_throttle.py` — Arsenii
 
 ### Reading domain (Alisa, PR-3)
 
-- [ ] T040 [P] [US1] `library/services.py`: `add_to_shelf`, `record_progress`, `finish_book` per [data-model § Concurrency](./data-model.md#concurrency-and-idempotency-p0-policy) (replay, 409, commit order, 503) — Alisa
-- [ ] T041 [P] [US1] `library/stats.py`: `reader_stats` — Alisa
-- [ ] T042 [P] Tests: `test_progress.py`, `test_stats.py`, `test_concurrency.py` (file-based SQLite) — Alisa
+- [x] T040 [P] [US1] `library/services.py`: `add_to_shelf`, `record_progress`, `finish_book` per [data-model § Concurrency](./data-model.md#concurrency-and-idempotency-p0-policy) (replay, 409, commit order, 503) — Alisa
+- [x] T041 [P] [US1] `library/stats.py`: `reader_stats` — Alisa
+- [x] T042 [P] Tests: `test_progress.py`, `test_stats.py`, `test_concurrency.py` (file-based SQLite) — Alisa
 
 ### Club (Igor, PR-5)
 
-- [ ] T050 [P] [US2] `club/services.py`: `is_member`, `redeem_code` (+ `redeem` throttle), real `evaluate_achievements` replacing the stub — Igor
-- [ ] T051 [P] [US2] Admin actions: activate/revoke membership, issue codes (plaintext shown once) — Igor
-- [ ] T052 [P] Tests: `test_membership.py`, `test_achievements.py` — Igor
+- [x] T050 [P] [US2] `club/services.py`: `is_member`, `redeem_code` (+ `redeem` throttle), real `evaluate_achievements` replacing the stub — Igor
+- [x] T051 [P] [US2] Admin actions: activate/revoke membership, issue codes (plaintext shown once) — Igor
+- [x] T052 [P] Tests: `test_membership.py`, `test_achievements.py` — Igor
 
 ---
 
 ## Phase 3 — M2 views and UI (after the matching M1 service)
 
-- [ ] T060 [US1] [US4] [US5] Library views/urls: anonymous catalog, book detail, add, shelf, shelf entry, progress, finish; `HX-Trigger: saved`; 409/503 handling — Alisa (PR-4)
-- [ ] T061 [US2] Club views: redeem, achievements, club corner (members only) — Igor (PR-6)
-- [ ] T062 [P] [US1] [US4] `templates/base.html`, `_toast.html`, `templates/adult/*`, `static/css/app.css`, `static/js/app.js` (422 swap only; 401/403/409/503 → "Nu s-a salvat"), `locale/ro` — Vladimir (PR-7)
-- [ ] T063 [P] [US1] [US3] `templates/child/*`, `static/css/child.css`, mascot + avatars, `apps/core/mascot.py`, manifest, `sw.js`, `/offline/` — Denis (PR-8)
-- [ ] T064 E2E `tests/test_demo_flow.py` (demo path + adult self-reader smoke) — Igor (PR-6)
-- [ ] T065 [P] `tests/test_i18n.py` — Vladimir
+- [x] T060 [US1] [US4] [US5] Library views/urls: anonymous catalog, book detail, add, shelf, shelf entry, progress, finish; `HX-Trigger: saved`; 409/503 handling — Alisa (PR-4)
+- [x] T061 [US2] Club views: redeem, achievements, club corner (members only) — Igor (PR-6)
+- [x] T062 [P] [US1] [US4] `templates/base.html`, `_toast.html`, `templates/adult/*`, `static/css/app.css`, `static/js/app.js` (422 swap only; 401/403/409/503 → "Nu s-a salvat"), `locale/ro` — Vladimir (PR-7)
+- [x] T063 [P] [US1] [US3] `templates/child/*`, `static/css/child.css`, mascot + avatars, `apps/core/mascot.py`, manifest, `sw.js`, `/offline/` — Denis (PR-8)
+- [x] T064 E2E `tests/test_demo_flow.py` (demo path + adult self-reader smoke) — Igor (PR-6)
+- [x] T065 [P] `tests/test_i18n.py` — Vladimir
 
 **Checkpoint M2**: `test_demo_flow.py` passes via the test client.
 

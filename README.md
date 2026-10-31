@@ -1,136 +1,96 @@
-# Impact Hackathon 2026
+# Gustul Cărților — Impact Hackathon 2026
 
-Gustul Cărților — Impact Hackathon 2026. Collaborative MVP implementation using [GitHub Spec Kit](https://github.com/github/spec-kit).
+**Gustul Cărților** este un jurnal de lectură pentru familii, construit pentru **Impact Hackathon 2026**:
+copilul citește și își înregistrează progresul pagină cu pagină, părintele urmărește un raport privat
+al familiei, iar membrii clubului deblochează activități speciale printr-un cod unic, emis de staff.
+
+- **Cine:** familii cu copii (7–15 ani) și cluburile de lectură care le însoțesc.
+- **De ce:** lectura copilului merită urmărită cu blândețe — fără presiune, cu insigni și cu părintele
+  mereu în câmp vizual, iar clubul de lectură rămâne conectat la familii.
+- **Cum:** o singură aplicație web în limba română, cu mod copil și suport PWA (instalarea pe Android este încă **NOT VERIFIED**).
 
 > [!NOTE]
-> **Project:** Gustul Cărților (case #1). **Team-approved technical stack, G7 (2026-10-30): Django 5.2 LTS + HTMX 2.x + responsive installable PWA (Python 3.12).** Architecture reviewed in [PR #8](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/pull/8). The partner has **not** signed off all business/safety requirements; G1–G6 remain tracked. Application implementation/test results are not implied by architecture approval.
+> **Stack aprobat de echipă (G7, 2026-10-30):** Django 5.2 LTS + HTMX 2.x + PWA instalabilă, Python 3.12.
+> Arhitectura e revizuită în [PR #8](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/pull/8);
+> partenerul **nu** a semnat încă toate cerințele de business/siguranță (G1–G6 rămân deschise).
 
-- **Architecture and execution**: [Issue #7](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/issues/7) · [Issue #4 — partner discovery](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/issues/4)
-- **Approved architecture (G7)**: [`specs/001-reading-diary-mvp/`](specs/001-reading-diary-mvp/spec.md) · [ADR-0001](docs/adr/0001-architecture-gustul-cartilor-mvp.md) · [execution plan](specs/001-reading-diary-mvp/execution-plan.md)
-- **Team Constitution**: [`.specify/memory/constitution.md`](.specify/memory/constitution.md)
-- **Agent Instructions**: [`AGENTS.md`](AGENTS.md) (universal / Antigravity / Codex) & [`CLAUDE.md`](CLAUDE.md) (Claude Code)
+## Vezi produsul (demo public)
 
----
+- **Aplicația live:** <https://gustul-cartilor.onrender.com>
+  - **Conectare:** [`/cont/intrare/`](https://gustul-cartilor.onrender.com/cont/intrare/)
+  - **Catalog public:** [`/carti/`](https://gustul-cartilor.onrender.com/carti/)
+  - Ruta de landing `/` a fost adăugată în [PR #51](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/pull/51);
+    verificarea sa în browser pe host rămâne **NOT RUN** până la un smoke test real. Dacă `/` nu răspunde, intră direct la
+    `/cont/intrare/` sau `/carti/`.
+- Conturi demo sintetice (`seed_demo`, toate fictive): `parinte1@demo.local` (părintele lui **Mia** și **Alex**),
+  `parinte2@demo.local` (părinte fără copii), `cititor@demo.local` (cititor adult), `admin@demo.local` (staff).
+  Parola și PIN-ul demo se setează la seed (variabilele `DEMO_PASSWORD` / `DEMO_PIN`); **nu se publică niciodată**.
 
-## 1. Team & AI Tooling
+### Ce demonstrează MVP-ul azi
 
-| Team Member | AI Tool | Primary Role / Responsibility |
-|---|---|---|
-| **Владимир** | Antigravity | Adult UX, shared design system, Romanian i18n — proposed workstream |
-| **Алиса** | Codex | Book library, progress/stats domain and views — proposed workstream |
-| **Арсений** | Claude Code | Django foundation, schema, guardian identity/authorization — proposed workstream |
-| **Игорь** | Codex & Antigravity | Club entitlements, integration, host proof — proposed workstream |
-| **Денис** | Antigravity | Child UX, mascot, PWA shell — proposed workstream |
+- **Familie și copii:** părintele creează profiluri de copii (poreclă, vârstă, avatar) în contul său.
+- **Progres de lectură:** copilul alege o carte din catalog și salvează pagina curentă (ex. 35/120) —
+  salvare idempotentă, sigură la rețea slabă.
+- **Raport părinte:** același progres e vizibil imediat în sesiunea separată a părintelui (aceeași bază de date).
+- **Realizări:** insignă „Prima carte" la terminare; insigna de club rămâne blocată pentru non-membri.
+- **Cod de club unic:** staff-ul emite un cod single-use (doar hash în DB, text clar afișat o singură dată);
+  părintele îl răscumpără pentru sine sau pentru copil.
+- **Colțul membrului:** activități publicate de staff (titlu, dată, loc) doar pentru membri.
 
-*These assignments follow the reviewed [execution plan](specs/001-reading-diary-mvp/execution-plan.md); they are proposed implementation ownership, not evidence that tasks have started. Shared schema and contracts require review.*
+### Not yet in MVP (deliberately out of scope)
 
----
+DM/mesagerie, schimb de cărți între utilizatori, profiluri publice ale copiilor, coordonarea reală a
+întâlnirilor offline, generare AI, plăți, verificare de identitate/vârstă. Vezi [`docs/demo/pitch-ro.md`](docs/demo/pitch-ro.md)
+pentru roadmap-ul condiționat.
 
-## 2. Getting Started & Local Setup
+## Status onest (2026-10-31)
 
-### Clone Repository
+| Domeniu | Stare |
+|---|---|
+| Cod pe `main` | [`3f2bb62`](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/commit/3f2bb62c5387f3120a6529aa4218adf3dc9b2cbb), CI: [374 passed, 4 skipped, 0 failed](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/actions/runs/41153120922) (Ubuntu) |
+| Persistența datelor | **SINTETIC DOAR** — [`docs/qa/issue-43-synthetic-persistence.md`](docs/qa/issue-43-synthetic-persistence.md) dovedește 35/120 peste o graniță de proces pe SQLite disposable. **Persistența reală pe Render/PostgreSQL după restart/redeploy: NOT VERIFIED.** |
+| Browser/telefon real, PWA instalată, offline | **NOT VERIFIED** — se urmărește în [#35](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/issues/35) (ledger: [`docs/demo/acceptance-ledger.md`](docs/demo/acceptance-ledger.md)) |
+| Siguranța copiilor | Fără DM deschise / profiluri publice de copii; **PIN-ul protejează ieșirea din modul copil, nu verifică vârsta sau identitatea** — audit: [`docs/reviews/2026-10-31-issue-44-child-safeguarding-igor.md`](docs/reviews/2026-10-31-issue-44-child-safeguarding-igor.md) |
+| Licență | **De confirmat** (`DECISION_REQUIRED: licensing`) — nu etichetați proiectul „open-source" până la decizia echipei/partenerului |
+
+## Rulare locală (Python 3.12 + uv)
+
+Bash:
+
 ```bash
 git clone https://github.com/Slave-of-Skynet/Impact-Hackathon-2026.git
 cd Impact-Hackathon-2026
+cp .env.example .env                # valori locale; nu comite niciodată .env
+uv sync --frozen                    # Python 3.12 + dependențe lock-uite
+uv run python manage.py migrate     # SQLite local disposable (db.sqlite3, git-ignored)
+uv run python manage.py seed_demo   # date sintetice idempotente; DEMO_PASSWORD/DEMO_PIN din .env
+uv run python manage.py runserver   # http://127.0.0.1:8000 (health: /healthz/)
+uv run pytest                       # suita completă
 ```
 
-### Spec Kit Agent Integrations
+Windows PowerShell cu bază **disposable în afara repo-ului** (varianta recomandată pentru repetiții):
+vezi [`docs/demo-deployment.md` § 10](docs/demo-deployment.md). Deploy real (Render + PostgreSQL):
+[`docs/demo-deployment.md`](docs/demo-deployment.md).
 
-The committed baseline in `main` is strictly **agent-neutral** (`installed_integrations = ["none"]`, `default_integration = "none"`). Each team member switches to their preferred agent integration locally.
+Pe Windows există 4 eșecuri **pre-existente** doar-Windows în `tests/test_review_fixes.py`
+(subprocess/encoding); sursa de adevăr este CI-ul Ubuntu pe fiecare PR.
 
-#### Local switching by tool:
-- **Владимир / Денис (Antigravity)**:
-  ```bash
-  specify integration switch agy
-  ```
-- **Алиса (Codex)**:
-  ```bash
-  specify integration switch codex
-  ```
-- **Арсений (Claude Code)**:
-  ```bash
-  specify integration switch claude
-  ```
+## Arhitectură, documentație, testare
 
-#### Special Case for Игорь (Codex + Antigravity):
-Because Antigravity is not multi-install safe (`Multi-install Safe: no`), simultaneous usage of Codex and Antigravity in the same directory will cause conflicting file modifications.
-1. **Simultaneous work**: Use separate Git worktrees for each agent:
-   ```bash
-   # In root repo:
-   git worktree add ../impact-codex -b feature/codex-subtask
-   git worktree add ../impact-agy -b feature/agy-subtask
+- **Decizii:** [ADR-0001](docs/adr/0001-architecture-gustul-cartilor-mvp.md) · specificația MVP
+  [`specs/001-reading-diary-mvp/`](specs/001-reading-diary-mvp/spec.md) (contracte:
+  [rute](specs/001-reading-diary-mvp/contracts/routes.md), [autorizare](specs/001-reading-diary-mvp/contracts/authorization.md))
+- **Aplicații:** `accounts` (identitate gardian, PIN, mod copil) · `library` (catalog, raft, progres) ·
+  `club` (membru, coduri, realizări) · `core` (landing, home copil, mascotă, PWA)
+- **Teste:** suita `tests/` (unit + integrare HTMX + E2E Django + concurență); verificări manuale de
+  demo/dispozitiv în [`docs/demo/acceptance-ledger.md`](docs/demo/acceptance-ledger.md)
+- **Echipă & unelte:** [docs/development-workflow.md](docs/development-workflow.md) (Spec Kit, integrări agent,
+  workflow Git) · [ Constituția echipei](.specify/memory/constitution.md) · [`AGENTS.md`](AGENTS.md)
+- **Demonstrație:** pitch (RO) [`docs/demo/pitch-ro.md`](docs/demo/pitch-ro.md) · plan de scenă
+  [`docs/demo/run-of-show.md`](docs/demo/run-of-show.md) · pregătire & recuperare
+  [`docs/demo/staging-and-recovery.md`](docs/demo/staging-and-recovery.md)
 
-   # Inside ../impact-codex:
-   specify integration switch codex
+## Licență
 
-   # Inside ../impact-agy:
-   specify integration switch agy
-   ```
-2. **Sequential work**: If using a single working tree, switch to the second agent only after the first agent has finished and is no longer touching workspace files.
-
----
-
-## 3. Reverting to Neutral Baseline Before Committing
-
-**Never commit agent-specific folders (`.agents/`, `.claude/`) or modified integration manifests to GitHub.**
-
-Before staging and committing your changes, always revert your local checkout to `none`:
-
-```bash
-# 1. Switch back to neutral baseline
-specify integration switch none
-
-# 2. Reset none.manifest.json if its timestamp was touched
-git checkout -- .specify/integrations/none.manifest.json
-
-# 3. Verify clean integration status (must report default: none, installed: none)
-specify integration status
-
-# 4. Verify no agent artifacts remain staged or untracked
-git status --short
-```
-
----
-
-## 4. Post-Announcement Development Lifecycle (SDD)
-
-Once the hackathon challenge is selected and approved, features follow the pragmatic Spec-Driven Development cycle:
-
-1. **`specify`**: Define user stories, requirements, and acceptance criteria in `specs/`. Focus on end-to-end demo value.
-2. **`clarify`**: Resolve ambiguities, identify assumptions (`[ASSUMPTION]`), and align on boundaries.
-3. **`plan`**: Design technical contracts (API, schemas, models). **Shared contracts require explicit team alignment before implementation.**
-4. **`tasks`**: Break down work into small, independent tasks suitable for parallel execution across branches.
-5. **`implement`**: Implement vertical slices, conduct verifiable smoke tests, and submit small Pull Requests.
-
-*For trivial bug fixes or rapid adjustments during the hackathon crunch, full ceremony is omitted in favor of time-boxed direct delivery.*
-
----
-
-## 5. Verified Repository Commands
-
-These commands are verified in this repository:
-
-| Command | Purpose | Expected Result |
-|---|---|---|
-| `specify version` | Check Spec Kit version | Reports `CLI Version 1.2.5` |
-| `specify check` | Verify available coding agent CLIs | Lists installed agent CLIs |
-| `specify integration status` | Check integration baseline | Reports `Default: none`, `Installed: none`, `Status: OK` |
-| `git status --short` | Verify clean working tree | No unexpected modified or untracked files |
-| `git diff --check` | Check for syntax/whitespace defects | Clean output (no errors) |
-
----
-
-## 6. Git & Collaboration Workflow
-
-1. **Branching**: Branch off `origin/main` using descriptive prefixes:
-   - `feat/<task-name>`
-   - `fix/<issue-name>`
-   - `chore/<task-name>`
-2. **Pull Requests**:
-   - Keep PRs small and targeted.
-   - Reference the relevant GitHub issue (`Refs #<id>` or `Closes #<id>`).
-   - Include exact verification commands executed and real outputs.
-   - Note any known limitations.
-3. **Review & Merge**:
-   - Push immediately to GitHub upon completion.
-   - Do not merge without review (e.g. independent review via ChatGPT or teammate sign-off).
+Licența proiectului **nu este încă decisă** (`DECISION_REQUIRED: licensing`) — alegerea aparține echipei și
+partenerului; până atunci repo-ul nu declară nicio licență și proiectul nu trebuie numit „open-source".

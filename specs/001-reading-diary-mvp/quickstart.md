@@ -1,16 +1,20 @@
 # Quickstart, demo script and verification plan
 
-> No application code exists yet. Commands in §1 become valid after PR-1 (M0). Nothing below has been run; all checks are **NOT RUN**.
+> **Status (2026-10-31, updated against `main@3f2bb62`):** the MVP is implemented and merged; CI on
+> `main` reports [374 passed, 4 skipped, 0 failed](https://github.com/Slave-of-Skynet/Impact-Hackathon-2026/actions/runs/41153120922)
+> (Ubuntu). The automated tests named in §3 exist and run in CI; their names evolved since this file was
+> written — `tests/` is the source of truth. The **manual** column of §3 and all device/browser/host
+> checks remain **NOT RUN** and are tracked in [`docs/demo/acceptance-ledger.md`](../../docs/demo/acceptance-ledger.md).
 
-## 1. Local setup (after M0)
+## 1. Local setup (works today)
 
 ```bash
 git clone https://github.com/Slave-of-Skynet/Impact-Hackathon-2026.git
 cd Impact-Hackathon-2026
-cp .env.example .env            # set DJANGO_SECRET_KEY, DEMO_PASSWORD, DEMO_PIN locally
-uv sync
+cp .env.example .env            # set DJANGO_SECRET_KEY, DEMO_PASSWORD, DEMO_PIN locally (never commit .env)
+uv sync --frozen
 uv run python manage.py migrate
-uv run python manage.py seed_demo --reset
+uv run python manage.py seed_demo   # idempotent; --reset only on a disposable local DB, never on the demo host
 uv run python manage.py runserver 0.0.0.0:8000
 uv run pytest
 ```
@@ -35,7 +39,10 @@ P0 smoke outside the stage script (US4/US5): logged-out browser opens `/carti/` 
 
 ## 3. Security counter-examples
 
-Each item names the check that will confirm it. Status column stays **NOT RUN** until the check is executed and its real output is attached to a PR.
+Each item names the check that confirms it. The **Automated test** column refers to tests planned at spec
+time; the current test names live in `tests/` and run in CI (see the status note at the top). The **Manual
+check** column and the **Status** column stay **NOT RUN** until executed with real output attached to a PR
+or to [`docs/demo/acceptance-ledger.md`](../../docs/demo/acceptance-ledger.md).
 
 | # | Counter-example (must be impossible) | Automated test (planned) | Manual check | Status |
 |---|---|---|---|---|
